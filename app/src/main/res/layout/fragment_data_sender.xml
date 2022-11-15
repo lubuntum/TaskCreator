@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DataSenderFragment"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_gravity="center|top"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="User name"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Login"/>
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"/>
+        <Button
+            android:id="@+id/send_btn"
+            android:theme="@style/Button.White"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:textColor="@color/button_text_color"
+            android:backgroundTint="@color/button_background_color"/>
+        <Button
+            android:id="@+id/show_data_btn"
+            android:theme="@style/Button.White"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Data"
+            android:textColor="@color/button_text_color"
+            android:backgroundTint="@color/button_background_color"/>
+    </LinearLayout>
+
+</FrameLayout>

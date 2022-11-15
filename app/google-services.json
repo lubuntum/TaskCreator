@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917070795407",
+    "project_id": "databaseapp-a1012",
+    "storage_bucket": "databaseapp-a1012.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917070795407:android:4451368639f9e0cb37d6fa",
+        "android_client_info": {
+          "package_name": "com.pavel.databaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917070795407-eojod7931pp9dfh5n9quse0nneht2udg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwRn6VTQ-JnQSjUfDRSbqEQjTx_l6kMiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917070795407-eojod7931pp9dfh5n9quse0nneht2udg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
