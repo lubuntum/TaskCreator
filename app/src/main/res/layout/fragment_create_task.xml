@@ -7,9 +7,11 @@
     tools:context=".CreateTaskFragment"
     android:padding="15dp">
 
+
+
     <LinearLayout
         android:id="@+id/text_info_container"
-        android:layout_width="250dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center|top"
@@ -23,21 +25,40 @@
             android:gravity="center"
             android:text="@string/create_task"
             android:textSize="17sp"/>
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            app:boxStrokeWidth="2dp"
-            app:shapeAppearance="@style/Rounded.top">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/employee"
-                android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="12">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/employee"
-                android:inputType="textPersonName"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="11"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                app:boxStrokeWidth="2dp"
+                app:shapeAppearance="@style/Rounded.top">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/employee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/employee"
+                    android:inputType="textPersonName"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        <ImageButton
+            android:id="@+id/search_employee"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:tint="@color/icon_color"
+            android:src="@drawable/icon_search_thin"
+            android:background="@drawable/ripple_custom"/>
+
+    </LinearLayout>
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
@@ -78,7 +99,7 @@
             android:layout_height="50dp"
             android:src="@drawable/icon_date_range_thin"
             app:tint="@color/icon_color"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:background="@drawable/ripple_custom" />
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/chosen_date"
             android:layout_width="wrap_content"
@@ -86,6 +107,7 @@
             android:gravity="center_vertical"
             android:hint="@string/date_pattern"/>
     </LinearLayout>
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/creator_name"
         android:layout_width="wrap_content"
