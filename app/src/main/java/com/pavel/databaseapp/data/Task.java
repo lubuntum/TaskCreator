@@ -2,7 +2,7 @@ package com.pavel.databaseapp.data;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-public class Task {
+public class Task{
     public static final String DESCRIPTION = "description";
     public static final String TASK_NAME = "task_name";
     public static final String START_DATE = "start";
@@ -25,6 +25,7 @@ public class Task {
         this.employee = employee;
         this.creator = creator;
     }
+
     public static Task parse(QueryDocumentSnapshot doc){
         return new Task(doc.getString(DESCRIPTION),doc.getString(TASK_NAME),doc.getString(START_DATE)
                 ,doc.getString(END_DATE),doc.getString(EMPLOYEE),doc.getString(CREATOR));
