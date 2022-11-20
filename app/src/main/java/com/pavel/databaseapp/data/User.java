@@ -16,6 +16,7 @@ public class User {
         this.login = login;
         this.password = password;
     }
+
     public static User parse(QueryDocumentSnapshot document){
         String name = document.getString(USER_NAME);
         String login = document.getString(USER_LOGIN);

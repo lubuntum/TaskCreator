@@ -1,4 +1,4 @@
-package com.pavel.databaseapp.useradapter;
+package com.pavel.databaseapp.adapter.useradapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

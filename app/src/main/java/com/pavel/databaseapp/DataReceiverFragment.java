@@ -15,18 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.pavel.databaseapp.data.User;
 import com.pavel.databaseapp.databinding.FragmentDataRecieverBinding;
-import com.pavel.databaseapp.useradapter.UserAdapter;
+import com.pavel.databaseapp.adapter.useradapter.UserAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 
 public class DataReceiverFragment extends Fragment {
     private MutableLiveData<List<User>> usersLiveData;
