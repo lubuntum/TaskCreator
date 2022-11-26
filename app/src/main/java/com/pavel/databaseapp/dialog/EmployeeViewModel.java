@@ -18,9 +18,10 @@ import java.util.List;
 
 public class EmployeeViewModel extends ViewModel {
     private List<Employee> employees;
+    private MutableLiveData<Employee> pickedEmployee;//выбор работника
     private FirebaseFirestore firestore;
-    private MutableLiveData<Boolean> uploadState;
-    private MutableLiveData<List<Employee>> employeesMutable;
+    private MutableLiveData<Boolean> uploadState;//отслеживание загрузки
+    private MutableLiveData<List<Employee>> employeesMutable;//результат загрузки, работники
     private boolean isRefreshing = false;
 
     public EmployeeViewModel(){
@@ -30,6 +31,7 @@ public class EmployeeViewModel extends ViewModel {
     public void mutableInit(){
         this.uploadState = new MutableLiveData<>();
         this.employeesMutable = new MutableLiveData<>();
+        this.pickedEmployee = new MutableLiveData<>();
     }
 
     public void uploadEmployees(){
@@ -56,6 +58,10 @@ public class EmployeeViewModel extends ViewModel {
                    uploadState.setValue(true);
                    employeesMutable.postValue(tempList);
                 });
+    }
+
+    public MutableLiveData<Employee> getPickedEmployee() {
+        return pickedEmployee;
     }
 
     public List<Employee> getEmployees() {

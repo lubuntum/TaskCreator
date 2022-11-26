@@ -18,17 +18,19 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     private final LayoutInflater inflater;
     private final List<Employee> employees;
+    private ViewHolder.OnEmployeeClickListener itemListener;
 
-    public EmployeeAdapter(Context context, List<Employee> employees) {
+    public EmployeeAdapter(Context context, List<Employee> employees, ViewHolder.OnEmployeeClickListener listener) {
         this.inflater = LayoutInflater.from(context);
         this.employees = employees;
+        this.itemListener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.employee_item,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,itemListener);
     }
 
     @Override
@@ -44,16 +46,28 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         return employees.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView primaryInfo;
         final TextView phone;
         final TextView mail;
+        OnEmployeeClickListener listener;
 
-        public ViewHolder(@NonNull View view) {
+        public ViewHolder(@NonNull View view, OnEmployeeClickListener listener) {
             super(view);
             this.primaryInfo = view.findViewById(R.id.primaryInfo);
-            this.phone = view.findViewById(R.id.phone);;
-            this.mail = view.findViewById(R.id.mail);;
+            this.phone = view.findViewById(R.id.phone);
+            this.mail = view.findViewById(R.id.mail);
+            this.listener = listener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(getAdapterPosition());
+        }
+
+        public interface OnEmployeeClickListener{
+            void onClick(int position);
         }
     }
 }

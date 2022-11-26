@@ -19,7 +19,7 @@ import com.pavel.databaseapp.databinding.EmployeeSearchBinding;
 
 import java.util.List;
 
-public class EmployeeSearchDialog extends DialogFragment {
+public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdapter.ViewHolder.OnEmployeeClickListener {
     EmployeeAdapter employeeAdapter;
     EmployeeSearchBinding binding;
     EmployeeViewModel viewModel;
@@ -28,7 +28,7 @@ public class EmployeeSearchDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(EmployeeViewModel.class);
-        viewModel.mutableInit();
+        //viewModel.mutableInit();
     }
 
     @Nullable
@@ -69,8 +69,9 @@ public class EmployeeSearchDialog extends DialogFragment {
         viewModel.getEmployeesMutable().observe(getViewLifecycleOwner(), new Observer<List<Employee>>() {
             @Override
             public void onChanged(List<Employee> employees) {
-                employeeAdapter = new EmployeeAdapter(getContext(),employees);
+                employeeAdapter = new EmployeeAdapter(getContext(),employees,getFragmentContext());
                 binding.employeeList.setAdapter(employeeAdapter);
+                viewModel.setEmployees(employees);
 
                 binding.swipeRefreshContainer.setRefreshing(false);
                 viewModel.setRefreshing(false);
@@ -91,5 +92,15 @@ public class EmployeeSearchDialog extends DialogFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onClick(int position) {
+        //Toast.makeText(getContext(), viewModel.getEmployees().get(position).name, Toast.LENGTH_SHORT).show();
+        viewModel.getPickedEmployee().setValue(viewModel.getEmployees().get(position));
+        dismiss();
+    }
+    public EmployeeSearchDialog getFragmentContext(){
+        return this;
     }
 }
