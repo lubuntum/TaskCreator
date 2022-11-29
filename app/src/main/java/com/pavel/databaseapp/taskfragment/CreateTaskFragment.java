@@ -1,15 +1,12 @@
 package com.pavel.databaseapp.taskfragment;
 
 import android.app.DatePickerDialog;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
@@ -20,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
-import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
@@ -29,7 +25,6 @@ import com.pavel.databaseapp.dialog.EmployeeViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class CreateTaskFragment extends Fragment {
     FragmentCreateTaskBinding binding;
@@ -61,11 +56,23 @@ public class CreateTaskFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        inputEmployeeMonitoringInit();//Для отслеживания ввода имени работника
+        inputEmployeeNameInit();//Для отслеживания ввода имени работника
         searchEmployeeInit();//Поиск работников, открытие окна при нажатии на лупу и тд
         datePickerInit();//Инициализация выбора даты
-        sendDataFilter();//фильтрация отправляемых данных, проверка
-        initFilterStatus();//для отображения статуса отправки
+        sendTaskFilterInit();//фильтрация отправляемых данных, проверка
+        sendTaskStatusInit();//статус после отправки сообщения успешно или нет
+        filterStatusInit();//для отображения статуса перед отправкой
+   }
+   private void sendTaskStatusInit(){
+        Observer<String> sendTaskObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String status) {
+                Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
+                binding.sendTaskAnim.setVisibility(View.INVISIBLE);
+                binding.sendTaskBtn.setVisibility(View.VISIBLE);
+            }
+        };
+        taskViewModel.getTaskSendStatus().observe(getViewLifecycleOwner(),sendTaskObserver);
    }
    private void datePickerInit(){
        //Читай события низу вверх
@@ -81,7 +88,7 @@ public class CreateTaskFragment extends Fragment {
                if (endDateCalendar.before(startDateCalendar))
                    Toast.makeText(getContext(), "Не корректно выбраны даты", Toast.LENGTH_SHORT).show();
                else {
-                   String startDateStr = dateFormat.format(startDateCalendar.getTime());
+                   String startDateStr = dateFormat.format(startDateCalendar.getTime()) + " ->";
                    String endDateStr = dateFormat.format(endDateCalendar.getTime());
                    binding.startDate.setText(startDateStr);
                    binding.endDate.setText(endDateStr);
@@ -130,7 +137,7 @@ public class CreateTaskFragment extends Fragment {
        employeeViewModel.getPickedEmployee().observe(getViewLifecycleOwner(),pickedEmployeeObserver);
    }
 
-   private void inputEmployeeMonitoringInit(){
+   private void inputEmployeeNameInit(){
         binding.employee.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -155,7 +162,7 @@ public class CreateTaskFragment extends Fragment {
             }
         });
    }
-   private void sendDataFilter(){
+   private void sendTaskFilterInit(){
         binding.sendTaskBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,11 +178,16 @@ public class CreateTaskFragment extends Fragment {
         });
    }
 
-   private void initFilterStatus(){
+   private void filterStatusInit(){
         Observer<String> statusObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if (s.equals("ok")) Toast.makeText(getContext(), "Задача отправлена", Toast.LENGTH_SHORT).show();
+                if (s.equals("Отправка..")) {
+                    Toast.makeText(getContext(), "Все хорошо, отправляем", Toast.LENGTH_SHORT).show();
+                    binding.sendTaskAnim.setVisibility(View.VISIBLE);
+                    binding.sendTaskBtn.setVisibility(View.GONE);
+                    taskViewModel.sendTask();
+                }
                 else
                     Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
             }
