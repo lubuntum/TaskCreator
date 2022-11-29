@@ -61,7 +61,7 @@ public class CreateTaskFragment extends Fragment {
         datePickerInit();//Инициализация выбора даты
         sendTaskFilterInit();//фильтрация отправляемых данных, проверка
         sendTaskStatusInit();//статус после отправки сообщения успешно или нет
-        filterStatusInit();//для отображения статуса перед отправкой
+        startSendingTaskInit();//для отображения статуса перед отправкой + отправка
    }
    private void sendTaskStatusInit(){
         Observer<String> sendTaskObserver = new Observer<String>() {
@@ -178,7 +178,7 @@ public class CreateTaskFragment extends Fragment {
         });
    }
 
-   private void filterStatusInit(){
+   private void startSendingTaskInit(){
         Observer<String> statusObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
