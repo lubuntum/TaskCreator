@@ -8,4 +8,6 @@
     <string name="task_description">Описание задачи</string>
     <string name="task_name">Название</string>
     <string name="employee">Работник</string>
+    <string name="pass">Пароль</string>
+    <string name="login">Логин</string>
 </resources>

@@ -23,8 +23,11 @@ import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
 import com.pavel.databaseapp.dialog.EmployeeSearchDialog;
 import com.pavel.databaseapp.dialog.EmployeeViewModel;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 public class CreateTaskFragment extends Fragment {
     FragmentCreateTaskBinding binding;
@@ -51,6 +54,7 @@ public class CreateTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentCreateTaskBinding.inflate(inflater, container, false);
+        ((GifDrawable)binding.sendTaskAnim.getDrawable()).stop();
         return binding.getRoot();
     }
 
@@ -68,8 +72,11 @@ public class CreateTaskFragment extends Fragment {
             @Override
             public void onChanged(String status) {
                 Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
-                binding.sendTaskAnim.setVisibility(View.INVISIBLE);
-                binding.sendTaskBtn.setVisibility(View.VISIBLE);
+                //binding.sendTaskAnim.setVisibility(View.INVISIBLE);
+                //binding.sendTaskBtn.setVisibility(View.VISIBLE);
+                //((GifDrawable)binding.sendTaskAnim.getDrawable()).reset();
+                ((GifDrawable)binding.sendTaskAnim.getDrawable()).seekToBlocking(0);
+                ((GifDrawable)binding.sendTaskAnim.getDrawable()).stop();
             }
         };
         taskViewModel.getTaskSendStatus().observe(getViewLifecycleOwner(),sendTaskObserver);
@@ -80,7 +87,7 @@ public class CreateTaskFragment extends Fragment {
        //Запоминают выбранные даты для их сравнения
        Calendar startDateCalendar = Calendar.getInstance();
        Calendar endDateCalendar = Calendar.getInstance();
-       SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+       DateFormat dateFormat = SimpleDateFormat.getDateInstance();
        DatePickerDialog.OnDateSetListener endDatePickListener = new DatePickerDialog.OnDateSetListener() {
            @Override
            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -163,7 +170,7 @@ public class CreateTaskFragment extends Fragment {
         });
    }
    private void sendTaskFilterInit(){
-        binding.sendTaskBtn.setOnClickListener(new View.OnClickListener() {
+        binding.sendTaskAnim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Task task = new Task(
@@ -184,8 +191,9 @@ public class CreateTaskFragment extends Fragment {
             public void onChanged(String s) {
                 if (s.equals("Отправка..")) {
                     Toast.makeText(getContext(), "Все хорошо, отправляем", Toast.LENGTH_SHORT).show();
-                    binding.sendTaskAnim.setVisibility(View.VISIBLE);
-                    binding.sendTaskBtn.setVisibility(View.GONE);
+                    //binding.sendTaskAnim.setVisibility(View.VISIBLE);
+                    ((GifDrawable)binding.sendTaskAnim.getDrawable()).start();
+                    //binding.sendTaskBtn.setVisibility(View.GONE);
                     taskViewModel.sendTask();
                 }
                 else

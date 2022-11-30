@@ -49,11 +49,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="1dp"
             app:tint="@color/icon_color"
-            android:src="@drawable/icon_search_thin"
+            android:src="@drawable/icon_search_2"
             android:background="@drawable/ripple_custom"/>
 
     </LinearLayout>
@@ -95,7 +97,9 @@
             android:id="@+id/date_range"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/icon_date_range_thin"
+            android:src="@drawable/icon_calendar_2"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             app:tint="@color/icon_color"
             android:background="@drawable/ripple_custom" />
         <com.google.android.material.textview.MaterialTextView
@@ -126,7 +130,10 @@
         android:id="@+id/send_task_btn"
         android:layout_width="45dp"
         android:layout_height="40dp"
-        android:src="@drawable/icon_send_task"
+        android:src="@drawable/icon_send_2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:background="@drawable/ripple_custom"
         android:tint="@color/icon_color"
         android:layout_marginTop="5dp"
@@ -139,12 +146,16 @@
         android:layout_width="45dp"
         android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:src="@drawable/animation_send"
-        android:visibility="invisible"
+        android:src="@drawable/animation_send_2"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/creator_name"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
