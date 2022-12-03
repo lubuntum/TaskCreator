@@ -1,4 +1,4 @@
-package com.pavel.databaseapp.taskfragment;
+package com.pavel.databaseapp.createtask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -8,7 +8,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
 
 public class CreateTaskViewModel extends ViewModel {
