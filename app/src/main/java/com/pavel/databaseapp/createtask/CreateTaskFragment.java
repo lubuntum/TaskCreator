@@ -20,8 +20,9 @@ import android.widget.Toast;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
-import com.pavel.databaseapp.dialog.EmployeeSearchDialog;
-import com.pavel.databaseapp.dialog.EmployeeViewModel;
+import com.pavel.databaseapp.dialog.employee.EmployeeSearchDialog;
+import com.pavel.databaseapp.dialog.employee.EmployeeViewModel;
+import com.pavel.databaseapp.settings.SettingsViewModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -179,7 +180,7 @@ public class CreateTaskFragment extends Fragment {
                         binding.startDate.getText().toString(),
                         binding.endDate.getText().toString(),
                         binding.employee.getText().toString(),
-                        binding.creatorName.getText().toString());
+                        SettingsViewModel.CREATOR_NAME);
                 taskViewModel.taskIsValid(task);
             }
         });

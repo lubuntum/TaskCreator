@@ -17,17 +17,19 @@
             android:id="@+id/task_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_weight="7"
             android:textSize="20sp"
             android:text="Task name"/>
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/date_range"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_weight="5"
             android:text="21 Nov 2022 -> 22 Dec 2022"
             android:gravity="right"/>
     </LinearLayout>
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/creator_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Creator name"/>

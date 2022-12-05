@@ -1,4 +1,4 @@
-package com.pavel.databaseapp.dialog;
+package com.pavel.databaseapp.dialog.employee;
 
 import android.widget.Toast;
 

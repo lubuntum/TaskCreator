@@ -4,10 +4,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class Task{
     public static final String DESCRIPTION = "description";
-    public static final String TASK_NAME = "task_name";
-    public static final String START_DATE = "start";
-    public static final String END_DATE = "end";
-    public static final String EMPLOYEE = "performer";
+    public static final String TASK_NAME = "taskName";
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
+    public static final String EMPLOYEE = "employee";
     public static final String CREATOR = "creator";
 
     public String description;
@@ -29,6 +29,9 @@ public class Task{
     public static Task parse(QueryDocumentSnapshot doc){
         return new Task(doc.getString(DESCRIPTION),doc.getString(TASK_NAME),doc.getString(START_DATE)
                 ,doc.getString(END_DATE),doc.getString(EMPLOYEE),doc.getString(CREATOR));
+    }
+    public String getDateRange(){
+        return String.format("%s => %s",startDate,endDate);
     }
 
     public String getDescription() {
