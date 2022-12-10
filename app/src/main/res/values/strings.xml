@@ -25,4 +25,20 @@
     <string name="create_task_menu">Создать задачу</string>
     <string name="settings">Настройки</string>
     <string name="active_tasks_count">Количество активных задач : %d</string>
+    <string name="auth_warning">Введите данные учетной записи выданные вам администратором, иначе обратитесь к нему для регистрации аккаунта</string>
+    <string name="email">email</string>
+    <string name="email_rus">Почта</string>
+    <string name="name">Имя пользователя</string>
+    <string name="phone">Номер телефона</string>
+    <string name="full_name">ФИО полностью</string>
+    <string name="position">Должность</string>
+    <string name="registraion">Регистрация</string>
+    <string name="accept">Войти</string>
+    <string-array name="positions">
+        <item>Должность</item>
+        <item>Преподаватель</item>
+        <item>Системный администратор</item>
+        <item>Работник кадровой службы</item>
+        <item>Программист</item>
+    </string-array>
 </resources>
