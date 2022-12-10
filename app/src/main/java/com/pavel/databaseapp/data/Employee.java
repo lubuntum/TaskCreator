@@ -17,6 +17,8 @@ public class Employee {
     public String mail;
     public String phone;
 
+    private String password;
+
     public Employee(String name, String secondName, String birthday, String position, String mail, String phone) {
         this.name = name;
         this.secondName = secondName;
@@ -77,5 +79,13 @@ public class Employee {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
