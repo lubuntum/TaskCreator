@@ -11,12 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.adapter.taskadapter.TaskAdapter;
-import com.pavel.databaseapp.createtask.CreateTaskViewModel;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentMyTasksBinding;
-import com.pavel.databaseapp.settings.SettingsViewModel;
 
 import java.util.List;
 
@@ -40,9 +40,11 @@ public class MyTaskFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        myTaskViewModel.getTaskByEmployeeName(SettingsViewModel.EMPLOYEE_NAME);
+        myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
         statusInit();
         downloadTasks();
+        freshTasksListInit();
+
     }
     public void statusInit(){
         Observer<String> statusObserver = new Observer<String>() {
@@ -55,16 +57,29 @@ public class MyTaskFragment extends Fragment {
 
     }
     public void downloadTasks(){
-        myTaskViewModel.getTaskByEmployeeName(SettingsViewModel.EMPLOYEE_NAME);
+        myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
+        binding.uploadBar.setVisibility(View.VISIBLE);
         Observer<List<Task>> tasksObserver = new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                String activeTaskStr = String.format(binding.activeTask.getText().toString(),tasks.size());
+                String activeTaskStr = String.format(getString(R.string.active_tasks_count), tasks.size());
                 binding.activeTask.setText(activeTaskStr);
                 TaskAdapter adapter = new TaskAdapter(getContext(),tasks);
                 binding.tasksList.setAdapter(adapter);
+
+                binding.uploadBar.setVisibility(View.GONE);
+                binding.swipeRefreshContainer.setRefreshing(false);
             }
         };
         myTaskViewModel.getMutableTasks().observe(getViewLifecycleOwner(), tasksObserver);
+    }
+    public void freshTasksListInit(){
+        binding.swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.swipeRefreshContainer.setRefreshing(true);
+                myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
+            }
+        });
     }
 }
