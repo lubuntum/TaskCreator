@@ -46,6 +46,7 @@ public class CreateTaskFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taskViewModel = new ViewModelProvider(this).get(CreateTaskViewModel.class);
+        taskViewModel.mutableInit();
         employeeViewModel = new ViewModelProvider(getActivity()).get(EmployeeViewModel.class);
         employeeViewModel.mutableInit();
     }
@@ -61,12 +62,18 @@ public class CreateTaskFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        UIInit();//Подстановка значений и тд
+
         inputEmployeeNameInit();//Для отслеживания ввода имени работника
         searchEmployeeInit();//Поиск работников, открытие окна при нажатии на лупу и тд
         datePickerInit();//Инициализация выбора даты
         sendTaskFilterInit();//фильтрация отправляемых данных, проверка
         sendTaskStatusInit();//статус после отправки сообщения успешно или нет
         startSendingTaskInit();//для отображения статуса перед отправкой + отправка
+   }
+   private void UIInit(){
+        binding.creatorName.setText(String.format("%s %s",
+                taskViewModel.getEmployee().name,taskViewModel.getEmployee().getSecondName()));
    }
    private void sendTaskStatusInit(){
         Observer<String> sendTaskObserver = new Observer<String>() {
@@ -140,6 +147,7 @@ public class CreateTaskFragment extends Fragment {
            @Override
            public void onChanged(Employee employee) {
                binding.employee.setText(employeeViewModel.getPickedEmployee().getValue().name);
+               binding.mail.setText(employeeViewModel.getPickedEmployee().getValue().mail);
            }
        };
        employeeViewModel.getPickedEmployee().observe(getViewLifecycleOwner(),pickedEmployeeObserver);
@@ -180,7 +188,8 @@ public class CreateTaskFragment extends Fragment {
                         binding.startDate.getText().toString(),
                         binding.endDate.getText().toString(),
                         binding.employee.getText().toString(),
-                        SettingsViewModel.CREATOR_NAME);
+                        taskViewModel.getEmployee().name,
+                        binding.mail.getText().toString());
                 taskViewModel.taskIsValid(task);
             }
         });
