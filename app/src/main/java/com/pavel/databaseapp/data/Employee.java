@@ -4,7 +4,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class Employee {
     public static final String NAME = "name";
-    private static final String SECOND_NAME = "second_name";
+    private static final String SECOND_NAME = "secondName";
     public static final String DATE_OF_BIRTHDAY = "birthday";
     public static final String POSITION = "position";
     public static final String MAIL = "mail";
