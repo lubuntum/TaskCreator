@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,14 +19,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pavel.databaseapp.MainActivity;
 import com.pavel.databaseapp.R;
+import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.databinding.FragmentAuthorizationBinding;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 public class AuthorizationFragment extends Fragment {
     FragmentAuthorizationBinding binding;
     FirebaseAuth auth = FirebaseAuth.getInstance();
+    AuthViewModel authViewModel;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authViewModel = new ViewModelProvider(getActivity()).get(AuthViewModel.class);
     }
 
     @Nullable
@@ -40,9 +47,28 @@ public class AuthorizationFragment extends Fragment {
         //if (auth.getCurrentUser() != null) {
         //    startActivity(new Intent(getContext(), MainActivity.class));
         //}
+        startSessionInit();
+        UIInit();
+    }
+    public void startSessionInit(){
+        Observer<Boolean> startSessionObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean session) {
+                if (session) {
+                    Toast.makeText(getContext(), "Добро пожаловать", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getContext(), MainActivity.class));
+                }
+            }
+        };
+        authViewModel.getStartSession().observe(getViewLifecycleOwner(),startSessionObserver);
+
+    }
+    public void UIInit(){
+        binding.loginAnim.setVisibility(View.INVISIBLE);
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.loginAnim.setVisibility(View.VISIBLE);
                 //взять с полей инфу и зарегистрировать пользователя
                 String email = binding.email.getText().toString();
                 String password = binding.password.getText().toString();
@@ -54,13 +80,11 @@ public class AuthorizationFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(getContext(),"Добро пожаловать",Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(getContext(),MainActivity.class));
+                            authViewModel.uploadEmployeeByLogin(auth.getCurrentUser().getEmail());//Логин воткнуть
                         }
                         else Toast.makeText(getContext(), "Error " + task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
         binding.registrationBtn.setOnClickListener(new View.OnClickListener() {

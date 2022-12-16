@@ -8,7 +8,6 @@
         android:id="@+id/active_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/active_tasks_count"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
@@ -24,9 +23,22 @@
             android:id="@+id/tasks_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="35dp"
+
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/upload_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="visible"/>
 
 
 

@@ -44,6 +44,13 @@
         android:orientation="horizontal"
         android:layout_gravity="end"
         android:layout_marginTop="5dp">
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/login_anim"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/animation_login"
+            android:visibility="invisible"/>
         <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/registration_btn"
             android:layout_width="wrap_content"
