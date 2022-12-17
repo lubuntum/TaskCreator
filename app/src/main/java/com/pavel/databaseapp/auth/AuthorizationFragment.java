@@ -68,14 +68,21 @@ public class AuthorizationFragment extends Fragment {
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (binding.email.getText().toString() == null ||
+                        binding.email.getText().toString().matches(" *")) {
+                    binding.email.setError("Введите логин");
+                    return;
+                }
+                if (binding.password.getText().toString() == null ||
+                        binding.password.getText().toString().matches(" *")){
+                    binding.password.setError("Введите пароль");
+                    return;
+                }
                 binding.loginAnim.setVisibility(View.VISIBLE);
                 //взять с полей инфу и зарегистрировать пользователя
                 String email = binding.email.getText().toString();
                 String password = binding.password.getText().toString();
-                if (password.length() < 6) {
-                    binding.password.setError("Длинна пароля должна быть не менее 6 символов");
-                    return;
-                }
+
                 auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -83,6 +90,8 @@ public class AuthorizationFragment extends Fragment {
                             authViewModel.uploadEmployeeByLogin(auth.getCurrentUser().getEmail());//Логин воткнуть
                         }
                         else Toast.makeText(getContext(), "Error " + task.getException(), Toast.LENGTH_SHORT).show();
+
+                        binding.loginAnim.setVisibility(View.INVISIBLE);
                     }
                 });
             }
