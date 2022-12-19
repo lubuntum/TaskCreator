@@ -1,10 +1,18 @@
 package com.pavel.databaseapp.createtask;
 
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.EMPLOYEE_EMAIL_STATUS;
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.EMPLOYEE_NAME_STATUS;
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.SUCCESS_STATUS;
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.TASK_DATE_STATUS;
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.TASK_DESCRIPTION_STATUS;
+import static com.pavel.databaseapp.createtask.CreateTaskViewModel.TASK_NAME_STATUS;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,7 +32,6 @@ import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
 import com.pavel.databaseapp.dialog.employee.EmployeeSearchDialog;
 import com.pavel.databaseapp.dialog.employee.EmployeeViewModel;
-import com.pavel.databaseapp.settings.SettingsViewModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -113,6 +120,9 @@ public class CreateTaskFragment extends Fragment {
                    String endDateStr = dateFormat.format(endDateCalendar.getTime());
                    binding.startDate.setText(startDateStr);
                    binding.endDate.setText(endDateStr);
+                   binding.dateRange.setColorFilter(
+                           ContextCompat.getColor(getContext(),
+                                   com.beardedhen.androidbootstrap.R.color.bootstrap_brand_info));
                }
            }
        };
@@ -205,15 +215,28 @@ public class CreateTaskFragment extends Fragment {
         Observer<String> statusObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if (s.equals("Отправка..")) {
+                if (s.equals(SUCCESS_STATUS)) {
                     Toast.makeText(getContext(), "Все хорошо, отправляем", Toast.LENGTH_SHORT).show();
                     //binding.sendTaskAnim.setVisibility(View.VISIBLE);
                     ((GifDrawable)binding.sendTaskAnim.getDrawable()).start();
                     //binding.sendTaskBtn.setVisibility(View.GONE);
                     taskViewModel.sendTask();
+                    return;
                 }
-                else
-                    Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
+                if (s.equals(TASK_NAME_STATUS))
+                    binding.taskName.setError(TASK_NAME_STATUS);
+                if(s.equals(EMPLOYEE_NAME_STATUS))
+                    binding.employee.setError(EMPLOYEE_NAME_STATUS);
+                if (s.equals(EMPLOYEE_EMAIL_STATUS))
+                    binding.mail.setError(EMPLOYEE_EMAIL_STATUS);
+                if (s.equals(TASK_DESCRIPTION_STATUS))
+                    binding.description.setError(TASK_DESCRIPTION_STATUS);
+                if(s.equals(TASK_DATE_STATUS))
+                    binding.dateRange.setColorFilter(
+                            ContextCompat.getColor(getContext(),
+                                    com.beardedhen.androidbootstrap.R.color.bootstrap_brand_danger));
+
+                Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
             }
         };
         taskViewModel.getTaskValidationStatus().observe(getViewLifecycleOwner(),statusObserver);

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,6 +18,15 @@ import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.settings.SettingsViewModel;
 
 public class CreateTaskViewModel extends AndroidViewModel {
+    public static String EMPLOYEE_NAME_STATUS = "Укажите имя работника или выберите из списка";
+    public static String TASK_NAME_STATUS = "Укажите имя задачи";
+    public static String TASK_DESCRIPTION_STATUS = "Укажите описание задачи";
+    public static String TASK_DATE_STATUS = "Выбор даты обязателен";
+    public static String TASK_PRIORITY_STATUS = "Выберите приоритет задачи";
+    public static String EMPLOYEE_EMAIL_STATUS = "Неверный формат почты";
+    public static String CREATOR_STATUS = "Ошибка впрофиле";
+    public static String SUCCESS_STATUS = "Отправка..";
+
     private MutableLiveData<String> taskValidationStatus;
     private MutableLiveData<String> datePickStatus;
     private Task composeTask;
@@ -37,18 +45,18 @@ public class CreateTaskViewModel extends AndroidViewModel {
         this.taskSendStatus = new MutableLiveData<>();
     }
     public void taskIsValid(Task task){
-        if (task.employee == null || task.employee.matches(" *")) taskValidationStatus.setValue("Укажите имя работника или выберите из списка");
-        else if (task.taskName == null || task.taskName.matches(" *")) taskValidationStatus.setValue("Имя задачи пустое");
-        else if (task.description == null || task.description.matches("[A-Za-z]{0,5}| *")) taskValidationStatus.setValue("Описание должно быть больше 5 символов");
+        if (task.employee == null || task.employee.matches(" *")) taskValidationStatus.setValue(EMPLOYEE_NAME_STATUS);
+        else if (task.taskName == null || task.taskName.matches(" *")) taskValidationStatus.setValue(TASK_NAME_STATUS);
+        else if (task.description == null || task.description.matches("[A-Za-z]{0,5}| *")) taskValidationStatus.setValue(TASK_DESCRIPTION_STATUS);
         else if (task.startDate == null || task.endDate == null ||
-                task.startDate.matches(" *") || task.endDate.matches(" *")) taskValidationStatus.setValue("Выбор даты обязателен");
-        else if (task.creator == null) taskValidationStatus.setValue("Неизвестная ошибка, автор неуказан");
+                task.startDate.matches(" *") || task.endDate.matches(" *")) taskValidationStatus.setValue(TASK_DATE_STATUS);
+        else if (task.creator == null) taskValidationStatus.setValue(CREATOR_STATUS);
         else if (task.employeeMail.matches(" *") || task.employeeMail.matches("[A-Za-z_\\d]{2,20}@[A-Za-z]{2,10}\\.[A-Za-z]]"))
-            taskValidationStatus.setValue("Неверный формат почты");
-        else if (task.importance.equals("Приоритет задачи")) taskValidationStatus.setValue("Выберите важность задачи");
+            taskValidationStatus.setValue(EMPLOYEE_EMAIL_STATUS);
+        else if (task.importance.equals("Приоритет задачи")) taskValidationStatus.setValue(TASK_PRIORITY_STATUS);
         else {
             this.composeTask = task;//сохраняем задачу
-            taskValidationStatus.setValue("Отправка..");
+            taskValidationStatus.setValue(SUCCESS_STATUS);
         }
     }
     public void sendTask(){
