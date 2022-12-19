@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email_rus"
-                android:inputType="textPersonName"/>
+                android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -150,7 +150,7 @@
                 android:id="@+id/send_task_anim"
                 android:layout_width="45dp"
                 android:layout_height="40dp"
-                android:src="@drawable/animation_send_3"
+                android:src="@drawable/animation_send_4"
                 android:visibility="visible"
                 android:clickable="true"
                 android:focusable="true"
