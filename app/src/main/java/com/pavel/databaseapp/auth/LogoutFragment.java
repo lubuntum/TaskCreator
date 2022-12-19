@@ -25,7 +25,7 @@ public class LogoutFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentLogoutBinding.inflate(inflater,container,true);
+        binding = FragmentLogoutBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
 
@@ -35,12 +35,20 @@ public class LogoutFragment extends Fragment {
         logout();
     }
     public void logout(){
-        SharedPreferences pref =
-                getContext().getSharedPreferences(SettingsViewModel.SETTINGS_STORAGE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.remove(SettingsViewModel.EMPLOYEE);
-        editor.apply();
-        Intent intent = new Intent(getContext(), AuthActivity.class);
-        startActivity(intent);
+        Runnable logoutRnb = new Runnable() {
+            @Override
+            public void run() {
+
+                SharedPreferences pref =
+                        getContext().getSharedPreferences(SettingsViewModel.SETTINGS_STORAGE, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.remove(SettingsViewModel.EMPLOYEE);
+                editor.apply();
+                Intent intent = new Intent(getContext(), AuthActivity.class);
+                startActivity(intent);
+            }
+        };
+        Thread thread = new Thread(logoutRnb);
+        thread.start();
     }
 }
