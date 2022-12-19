@@ -45,6 +45,7 @@ public class CreateTaskViewModel extends AndroidViewModel {
         else if (task.creator == null) taskValidationStatus.setValue("Неизвестная ошибка, автор неуказан");
         else if (task.employeeMail.matches(" *") || task.employeeMail.matches("[A-Za-z_\\d]{2,20}@[A-Za-z]{2,10}\\.[A-Za-z]]"))
             taskValidationStatus.setValue("Неверный формат почты");
+        else if (task.importance.equals("Приоритет задачи")) taskValidationStatus.setValue("Выберите важность задачи");
         else {
             this.composeTask = task;//сохраняем задачу
             taskValidationStatus.setValue("Отправка..");

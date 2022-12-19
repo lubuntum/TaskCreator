@@ -88,8 +88,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="260dp"
-        android:layout_marginBottom="10dp">
+        android:maxHeight="260dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description"
             android:layout_width="match_parent"
@@ -97,6 +96,11 @@
             android:maxHeight="250dp"
             android:hint="@string/task_description"/>
     </com.google.android.material.textfield.TextInputLayout>
+        <Spinner
+            android:id="@+id/task_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/task_priority"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="260dp"
@@ -123,15 +127,13 @@
                 android:id="@+id/start_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:hint="@string/date_pattern"/>
+                android:gravity="center_vertical" />
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:hint="@string/date_pattern"/>
+                android:layout_marginLeft="5dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

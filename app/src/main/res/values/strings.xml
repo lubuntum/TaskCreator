@@ -42,4 +42,10 @@
         <item>Работник кадровой службы</item>
         <item>Программист</item>
     </string-array>
+    <string-array name="task_priority">
+        <item>Приоритет задачи</item>
+        <item>Выполнить до окончания срока</item>
+        <item>Важная, выполнить быстрее</item>
+        <item>Маскимальный приоритет</item>
+    </string-array>
 </resources>

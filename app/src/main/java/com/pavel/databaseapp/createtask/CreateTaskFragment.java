@@ -14,9 +14,11 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
@@ -74,6 +76,10 @@ public class CreateTaskFragment extends Fragment {
    private void UIInit(){
         binding.creatorName.setText(String.format("%s %s",
                 taskViewModel.getEmployee().name,taskViewModel.getEmployee().getSecondName()));
+       ArrayAdapter<String> taskAdapter = new ArrayAdapter<>(getContext(),
+               R.layout.task_spinner_item,
+               getResources().getStringArray(R.array.task_priority));
+       binding.taskPriority.setAdapter(taskAdapter);
    }
    private void sendTaskStatusInit(){
         Observer<String> sendTaskObserver = new Observer<String>() {
@@ -189,7 +195,7 @@ public class CreateTaskFragment extends Fragment {
                         binding.endDate.getText().toString(),
                         binding.employee.getText().toString(),
                         taskViewModel.getEmployee().name,
-                        binding.mail.getText().toString());
+                        binding.mail.getText().toString(),binding.taskPriority.getSelectedItem().toString());
                 taskViewModel.taskIsValid(task);
             }
         });
