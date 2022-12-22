@@ -17,17 +17,24 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private final List<Task> taskList;
     private final LayoutInflater inflater;
+    private final int resource;
 
     public TaskAdapter(Context context, List<Task> taskList) {
         this.taskList = taskList;
         this.inflater = LayoutInflater.from(context);
+        this.resource = R.layout.task_item;
     }
 
+    public TaskAdapter(Context context, List<Task> taskList, int resource){
+        this.taskList = taskList;
+        this.inflater = LayoutInflater.from(context);
+        this.resource = resource;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.task_item,parent,false);
+        View view = inflater.inflate(resource,parent,false);
         return new ViewHolder(view);
     }
 
@@ -35,7 +42,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Task task = taskList.get(position);
         holder.taskName.setText(task.getTaskName());
-        holder.dateRange.setText(task.getDateRange());
+        holder.dateRange.setText(task.getEndDate());
         holder.creatorName.setText(task.getCreator());
     }
 

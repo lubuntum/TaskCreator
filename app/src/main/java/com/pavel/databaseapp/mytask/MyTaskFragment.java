@@ -64,7 +64,7 @@ public class MyTaskFragment extends Fragment {
             public void onChanged(List<Task> tasks) {
                 String activeTaskStr = String.format(getString(R.string.active_tasks_count), tasks.size());
                 binding.activeTask.setText(activeTaskStr);
-                TaskAdapter adapter = new TaskAdapter(getContext(),tasks);
+                TaskAdapter adapter = new TaskAdapter(getContext(),tasks, R.layout.task_item_2);
                 binding.tasksList.setAdapter(adapter);
 
                 binding.uploadBar.setVisibility(View.GONE);
