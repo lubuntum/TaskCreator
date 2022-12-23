@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Task;
 
@@ -44,6 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.taskName.setText(task.getTaskName());
         holder.dateRange.setText(task.getEndDate());
         holder.creatorName.setText(task.getCreator());
+        holder.expandableTextView.setText(task.getDescription());
     }
 
     @Override
@@ -55,11 +57,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public TextView taskName;
         public TextView dateRange;
         public TextView creatorName;
+        public ExpandableTextView expandableTextView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.taskName = itemView.findViewById(R.id.task_name);
             this.dateRange = itemView.findViewById(R.id.date_range);
             this.creatorName = itemView.findViewById(R.id.creator_name);
+            this.expandableTextView = itemView.findViewById(R.id.expand_text_view);
         }
     }
 }

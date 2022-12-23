@@ -79,6 +79,26 @@
             android:text="Большаков П.Д." />
 
     </LinearLayout>
+    <com.ms.square.android.expandabletextview.ExpandableTextView
+        android:id="@+id/expand_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:maxCollapsedLines="1"
+        app:layout_constraintTop_toBottomOf="@id/task_info_container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <TextView
+            android:id="@+id/expandable_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageButton
+            android:id="@+id/expand_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </com.ms.square.android.expandabletextview.ExpandableTextView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
