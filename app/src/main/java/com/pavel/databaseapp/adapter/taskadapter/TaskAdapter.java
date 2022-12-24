@@ -7,35 +7,71 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Task;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private final List<Task> taskList;
-    private final LayoutInflater inflater;
+    private List<Task> taskList;
+    private Map<String, Integer> statusMap;
+    private LayoutInflater inflater;
     private final int resource;
+    private Context context;
+    public final int [] STATUSES_CODES = {R.drawable.task_item_ripple_mask_success,
+            R.drawable.task_item_ripple_mask_normal,R.drawable.task_item_ripple_mask_hard,
+            R.drawable.task_item_ripple_mask_extreme};
+    //public final int SUCCESS_STATUS_CODE =
+    //public final int NORMAL_STATUS_CODE =
+    //public final int HARD_STATUS_CODE = ;
+    //public final int EXTREME_STATUS_CODE = ;
 
     public TaskAdapter(Context context, List<Task> taskList) {
-        this.taskList = taskList;
-        this.inflater = LayoutInflater.from(context);
+        adapterInit(context,taskList);
         this.resource = R.layout.task_item;
     }
 
     public TaskAdapter(Context context, List<Task> taskList, int resource){
+        adapterInit(context,taskList);
+        this.resource = resource;
+    }
+
+    public void adapterInit(Context context, List<Task> taskList){
+        this.context = context;
         this.taskList = taskList;
         this.inflater = LayoutInflater.from(context);
-        this.resource = resource;
+        //Протестировать порядок важен!!!
+        List<String> statusesList = Arrays.asList(
+                context.getResources().getStringArray(R.array.task_priority));
+        this.statusMap = new HashMap<>();
+        //statusMap.put(statusesList.get(0),SUCCESS_STATUS_CODE);
+        for(int i = 1; i < statusesList.size();i++)
+            statusMap.put(statusesList.get(i),STATUSES_CODES[i]);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Task task = taskList.get(position);
+        if (statusMap.get(task.getImportance()) == null) return STATUSES_CODES[1];
+        return statusMap.get(task.getImportance());
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(resource,parent,false);
+        view.setBackground(ResourcesCompat.getDrawable(
+                getContext().getResources(),
+                viewType,
+                null));
         return new ViewHolder(view);
     }
 
@@ -46,6 +82,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.dateRange.setText(task.getEndDate());
         holder.creatorName.setText(task.getCreator());
         holder.expandableTextView.setText(task.getDescription());
+
     }
 
     @Override
@@ -65,5 +102,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             this.creatorName = itemView.findViewById(R.id.creator_name);
             this.expandableTextView = itemView.findViewById(R.id.expand_text_view);
         }
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

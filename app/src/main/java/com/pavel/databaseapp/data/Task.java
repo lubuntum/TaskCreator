@@ -92,4 +92,12 @@ public class Task{
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+    public String getImportance() {
+        return importance;
+    }
+
+    public void setImportance(String importance) {
+        this.importance = importance;
+    }
 }

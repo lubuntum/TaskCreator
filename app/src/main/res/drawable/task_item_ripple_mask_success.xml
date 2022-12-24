@@ -7,7 +7,7 @@
             <corners android:radius="10dp"/>
         </shape>
     </item>
-    <item android:drawable="@drawable/task_item_background"/>
+    <item android:id="@+id/status" android:drawable="@drawable/task_item_background_success"/>
     <item android:left="10dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
