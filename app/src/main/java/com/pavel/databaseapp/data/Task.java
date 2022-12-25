@@ -11,7 +11,9 @@ public class Task{
     public static final String CREATOR = "creator";
     public static final String EMPLOYEE_MAIL = "employeeMail";
     public static final String IMPORTANCE  = "importance";
+    public static final String IS_COMPLETE = "isComplete";
 
+    public String id;
     public String description;
     public String taskName;
     public String startDate;
@@ -20,12 +22,13 @@ public class Task{
     public String creator;
     public String employeeMail;
     public String importance;
+    public boolean isComplete;
 
     public Task(String description,
                 String taskName,
                 String startDate,
                 String endDate,
-                String employee, String creator, String employeeMail, String importance) {
+                String employee, String creator, String employeeMail, String importance, boolean isComplete) {
         this.description = description;
         this.taskName = taskName;
         this.startDate = startDate;
@@ -34,13 +37,25 @@ public class Task{
         this.creator = creator;
         this.employeeMail = employeeMail;
         this.importance = importance;
+        this.isComplete = isComplete;
     }
+
+    public Task(){}
 
     public static Task parse(QueryDocumentSnapshot doc){
         return new Task(doc.getString(DESCRIPTION),doc.getString(TASK_NAME),doc.getString(START_DATE)
                 ,doc.getString(END_DATE),doc.getString(EMPLOYEE), doc.getString(CREATOR),
-                doc.getString(EMPLOYEE_MAIL), doc.getString(IMPORTANCE));
+                doc.getString(EMPLOYEE_MAIL), doc.getString(IMPORTANCE), Boolean.TRUE.equals(doc.getBoolean(IS_COMPLETE)));
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDateRange(){
         return String.format("%s => %s",startDate,endDate);
     }
@@ -99,5 +114,9 @@ public class Task{
 
     public void setImportance(String importance) {
         this.importance = importance;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
     }
 }

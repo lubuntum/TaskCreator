@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -42,22 +44,43 @@ public class MyTaskViewModel extends AndroidViewModel {
     public void getTaskByEmployeeLogin(String mail){
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
                 .whereEqualTo(Task.EMPLOYEE_MAIL,mail)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()){
                             List<Task> tasks = new LinkedList<>();
-                            for(QueryDocumentSnapshot doc: task.getResult())
-                               tasks.add(Task.parse(doc));
+                            List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot doc: docs) {
+                                Task task = doc.toObject(Task.class);
+                                task.setId(doc.getId());
+                                tasks.add(task);
+                            }
                             mutableTasks.postValue(tasks);
                         }
-                        else status.postValue("Возникла ошибка при загрузке данных");
                     }
-                }).addOnFailureListener(new OnFailureListener() {
+                })
+                .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         status.postValue("Пожалуйста проверьте интернет соединение");
                         //Log.d("TASK FAIL","Please check network connection");
+                    }
+                });
+    }
+    public void completeTask(Task task){
+        task.setComplete(true);
+        firestore.collection(SettingsViewModel.TASKS_COLLECTION)
+                .document(task.getId())
+                .set(task).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        status.postValue(String.format("Задача %s успешно выполнена",task.getTaskName()));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        status.postValue("Ошибка" + e.toString());
                     }
                 });
     }

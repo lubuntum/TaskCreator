@@ -20,9 +20,10 @@ import com.pavel.databaseapp.databinding.FragmentMyTasksBinding;
 
 import java.util.List;
 
-public class MyTaskFragment extends Fragment {
+public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.OnTaskCompleteClickListener {
     MyTaskViewModel myTaskViewModel;
     FragmentMyTasksBinding binding;
+    TaskAdapter taskAdapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         myTaskViewModel =  new ViewModelProvider(getActivity()).get(MyTaskViewModel.class);
@@ -64,8 +65,9 @@ public class MyTaskFragment extends Fragment {
             public void onChanged(List<Task> tasks) {
                 String activeTaskStr = String.format(getString(R.string.active_tasks_count), tasks.size());
                 binding.activeTask.setText(activeTaskStr);
-                TaskAdapter adapter = new TaskAdapter(getContext(),tasks, R.layout.task_item_2);
-                binding.tasksList.setAdapter(adapter);
+                taskAdapter = new TaskAdapter(getContext(),tasks, R.layout.task_item_2);
+                taskAdapter.setTaskCompleteListener(getCurrentFragment());
+                binding.tasksList.setAdapter(taskAdapter);
 
                 binding.uploadBar.setVisibility(View.GONE);
                 binding.swipeRefreshContainer.setRefreshing(false);
@@ -81,5 +83,17 @@ public class MyTaskFragment extends Fragment {
                 myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
             }
         });
+    }
+    //для применеия this в анонимных классах, поскольку там свой this, а нужен этот
+    public MyTaskFragment getCurrentFragment(){
+        return this;
+    }
+
+    @Override
+    public void onClick(int position) {
+        Toast.makeText(getContext(),
+                taskAdapter.getItemByPosition(position).taskName,
+                Toast.LENGTH_SHORT).show();
+        myTaskViewModel.completeTask(taskAdapter.getItemByPosition(position));
     }
 }

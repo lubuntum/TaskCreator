@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
         <ImageButton
-            android:id="@+id/complete_task"
+            android:id="@+id/complete_task_btn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:adjustViewBounds="true"

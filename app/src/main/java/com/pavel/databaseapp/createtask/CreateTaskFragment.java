@@ -205,7 +205,8 @@ public class CreateTaskFragment extends Fragment {
                         binding.endDate.getText().toString(),
                         binding.employee.getText().toString(),
                         taskViewModel.getEmployee().name,
-                        binding.mail.getText().toString(),binding.taskPriority.getSelectedItem().toString());
+                        binding.mail.getText().toString(),binding.taskPriority.getSelectedItem().toString(),
+                        false);
                 taskViewModel.taskIsValid(task);
             }
         });
