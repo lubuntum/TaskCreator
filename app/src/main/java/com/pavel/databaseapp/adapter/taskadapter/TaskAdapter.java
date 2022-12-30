@@ -1,6 +1,7 @@
 package com.pavel.databaseapp.adapter.taskadapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,14 +19,20 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Task;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private List<Task> taskList;
+    private List<Task> filterList;
     private Map<String, Integer> statusMap;
     private LayoutInflater inflater;
     private final int resource;
@@ -47,10 +55,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         adapterInit(context,taskList);
         this.resource = resource;
     }
-
     public void adapterInit(Context context, List<Task> taskList){
         this.context = context;
         this.taskList = taskList;
+        this.filterList = taskList;
         this.inflater = LayoutInflater.from(context);
         //Протестировать порядок важен!!!
         List<String> statusesList = Arrays.asList(
@@ -60,10 +68,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         for(int i = 1; i < statusesList.size();i++)
             statusMap.put(statusesList.get(i),IMPORTANCE_STATUSES_CODES[i]);
     }
-
     @Override
     public int getItemViewType(int position) {
-        Task task = taskList.get(position);
+        Task task = filterList.get(position);
         //Написать потом нормальный код!!!! вынести success
         if (task.isComplete) return statusMap.get("success");
         if (statusMap.get(task.getImportance()) == null) return IMPORTANCE_STATUSES_CODES[1];
@@ -85,19 +92,48 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Task task = taskList.get(position);
+        Task task = filterList.get(position);
         holder.taskName.setText(task.getTaskName());
         holder.dateRange.setText(task.getEndDate());
         holder.creatorName.setText(task.getCreator());
         holder.expandableTextView.setText(task.getDescription());
+        if (task.isComplete){
+            holder.dateRange.setTextColor(context.getResources()
+                    .getColor(com.beardedhen.androidbootstrap.R.color.bootstrap_brand_success));
+            holder.completeTaskBtn.setColorFilter(ContextCompat.getColor(
+                    getContext(),
+                    com.beardedhen.androidbootstrap.R.color.bootstrap_brand_success));
+            holder.completeTaskBtn.setClickable(false);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return filterList.size();
+    }
+    //Сделать сравнение по датам (сделано)
+    public void filterByDate(Date date) {
+        filterList = new LinkedList<>();
+        DateFormat parseFormat = new SimpleDateFormat(context.getResources().getString(R.string.date_format));
+        for (Task task: taskList) {
+            try {
+                Date testDate = parseFormat.parse(task.getEndDate());
+                Log.d(task.getEndDate(),String.valueOf(date.compareTo(testDate)));
+                if (parseFormat.parse(task.getEndDate()).compareTo(date) == 0)
+                    filterList.add(task);
+            } catch (ParseException e){
+                System.out.println(String.format("Incorrect date format %s",task.getEndDate()));
+            }
+        }
+        notifyDataSetChanged();
+    }
+    public void completeTask(int position){
+        if (position < 0 || position > filterList.size()) return;
+        filterList.get(position).setComplete(true);
+        notifyItemChanged(position);
     }
     public Task getItemByPosition(int position){
-        return taskList.get(position);
+        return filterList.get(position);
     }
     public Context getContext() {
         return context;

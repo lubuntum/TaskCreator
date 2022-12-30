@@ -12,6 +12,7 @@ public class Task{
     public static final String EMPLOYEE_MAIL = "employeeMail";
     public static final String IMPORTANCE  = "importance";
     public static final String IS_COMPLETE = "isComplete";
+    public static final String IS_CHECKED = "isChecked";
 
     public String id;
     public String description;
@@ -23,12 +24,16 @@ public class Task{
     public String employeeMail;
     public String importance;
     public boolean isComplete;
+    public boolean isChecked;
 
     public Task(String description,
                 String taskName,
                 String startDate,
                 String endDate,
-                String employee, String creator, String employeeMail, String importance, boolean isComplete) {
+                String employee,
+                String creator,
+                String employeeMail,
+                String importance, boolean isComplete, boolean isChecked) {
         this.description = description;
         this.taskName = taskName;
         this.startDate = startDate;
@@ -38,6 +43,7 @@ public class Task{
         this.employeeMail = employeeMail;
         this.importance = importance;
         this.isComplete = isComplete;
+        this.isChecked = isChecked;
     }
 
     public Task(){}
@@ -45,7 +51,8 @@ public class Task{
     public static Task parse(QueryDocumentSnapshot doc){
         return new Task(doc.getString(DESCRIPTION),doc.getString(TASK_NAME),doc.getString(START_DATE)
                 ,doc.getString(END_DATE),doc.getString(EMPLOYEE), doc.getString(CREATOR),
-                doc.getString(EMPLOYEE_MAIL), doc.getString(IMPORTANCE), Boolean.TRUE.equals(doc.getBoolean(IS_COMPLETE)));
+                doc.getString(EMPLOYEE_MAIL), doc.getString(IMPORTANCE),
+                Boolean.TRUE.equals(doc.getBoolean(IS_COMPLETE)), Boolean.TRUE.equals(doc.getBoolean(IS_CHECKED)));
     }
 
     public String getId() {
@@ -118,5 +125,13 @@ public class Task{
 
     public void setComplete(boolean complete) {
         isComplete = complete;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
     }
 }

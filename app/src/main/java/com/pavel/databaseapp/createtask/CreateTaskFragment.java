@@ -108,7 +108,7 @@ public class CreateTaskFragment extends Fragment {
        //Запоминают выбранные даты для их сравнения
        Calendar startDateCalendar = Calendar.getInstance();
        Calendar endDateCalendar = Calendar.getInstance();
-       DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+       DateFormat dateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format));
        DatePickerDialog.OnDateSetListener endDatePickListener = new DatePickerDialog.OnDateSetListener() {
            @Override
            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -206,7 +206,7 @@ public class CreateTaskFragment extends Fragment {
                         binding.employee.getText().toString(),
                         taskViewModel.getEmployee().name,
                         binding.mail.getText().toString(),binding.taskPriority.getSelectedItem().toString(),
-                        false);
+                        false,false);
                 taskViewModel.taskIsValid(task);
             }
         });

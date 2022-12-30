@@ -13,11 +13,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.github.techisfun.onelinecalendar.OnDateClickListener;
 import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.adapter.taskadapter.TaskAdapter;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentMyTasksBinding;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.OnTaskCompleteClickListener {
@@ -45,6 +50,7 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
         statusInit();
         downloadTasks();
         freshTasksListInit();
+        taskCalendarInit();
 
     }
     public void statusInit(){
@@ -89,11 +95,31 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
         return this;
     }
 
+    public void taskCalendarInit(){
+        binding.taskCalendar.setOnDateClickListener(new OnDateClickListener() {
+            @Override
+            public void onDateClicked(@NonNull Date date) {
+                //Toast.makeText(getContext(), date.toString(), Toast.LENGTH_SHORT).show();
+                //DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+                DateFormat parseFormat = new SimpleDateFormat(getResources().getString(R.string.date_format));
+                Toast.makeText(getContext(), parseFormat.format(date), Toast.LENGTH_SHORT).show();
+                try {
+                    taskAdapter.filterByDate(parseFormat.parse(parseFormat.format(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                //Toast.makeText(getContext(), String.valueOf(taskAdapter.getFilterItemCount()), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public void onClick(int position) {
         Toast.makeText(getContext(),
                 taskAdapter.getItemByPosition(position).taskName,
                 Toast.LENGTH_SHORT).show();
-        myTaskViewModel.completeTask(taskAdapter.getItemByPosition(position));
+        myTaskViewModel.completeTaskUpload(taskAdapter.getItemByPosition(position));
+        taskAdapter.completeTask(position);
     }
 }

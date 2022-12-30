@@ -35,6 +35,7 @@
     <string name="registraion">Регистрация</string>
     <string name="accept">Войти</string>
     <string name="logout">Выйти</string>
+    <string name="date_format">dd.MM.yyyy</string>
     <string-array name="positions">
         <item>Должность</item>
         <item>Преподаватель</item>

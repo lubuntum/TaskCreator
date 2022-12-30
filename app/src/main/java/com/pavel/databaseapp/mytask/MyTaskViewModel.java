@@ -8,12 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.pavel.databaseapp.data.Employee;
@@ -68,7 +66,7 @@ public class MyTaskViewModel extends AndroidViewModel {
                     }
                 });
     }
-    public void completeTask(Task task){
+    public void completeTaskUpload(Task task){
         task.setComplete(true);
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
                 .document(task.getId())

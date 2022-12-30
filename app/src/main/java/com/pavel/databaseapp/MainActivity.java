@@ -1,16 +1,18 @@
 package com.pavel.databaseapp;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,16 +21,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
-import com.pavel.databaseapp.auth.AuthActivity;
-import com.pavel.databaseapp.auth.AuthorizationFragment;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.databinding.ActivityHomeBinding;
+import com.pavel.databaseapp.services.notification.NotificationService;
 import com.pavel.databaseapp.settings.SettingsViewModel;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static int tasksCount = 0;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
     private SharedPreferences preferences;
@@ -38,7 +38,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(!isNotificationServiceRunning()) {
+            tasksCount = 0;
+            startNotificationService();
+        }
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -86,5 +89,20 @@ public class MainActivity extends AppCompatActivity {
         TextView employeePosition = headerView.findViewById(R.id.position);
         employeeName.setText(employee.name);
         employeePosition.setText(employee.position);
+    }
+    //Также делать для API > 26
+    public void startNotificationService(){
+        Intent intent = new Intent(this, NotificationService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(this,intent);
+        }
+    }
+    //Проверка, если сервис оповещений уже запущен
+    public boolean isNotificationServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE))
+            if(NotificationService.class.getName().equals(serviceInfo.service.getClassName()))
+                return true;
+        return false;
     }
 }

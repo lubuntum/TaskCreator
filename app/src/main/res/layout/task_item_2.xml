@@ -28,8 +28,7 @@
             android:src="@drawable/icon_accept_gray"
             android:background="@drawable/ripple_accept"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/bootstrap_gray_light" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/task_info_container"
