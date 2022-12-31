@@ -15,9 +15,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Task;
+import com.pavel.databaseapp.settings.SettingsViewModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
+    FirebaseFirestore firestore;
     private List<Task> taskList;
     private List<Task> filterList;
     private Map<String, Integer> statusMap;
@@ -57,6 +60,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
     public void adapterInit(Context context, List<Task> taskList){
         this.context = context;
+        this.firestore = FirebaseFirestore.getInstance();
         this.taskList = taskList;
         this.filterList = taskList;
         this.inflater = LayoutInflater.from(context);
@@ -104,6 +108,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                     getContext(),
                     com.beardedhen.androidbootstrap.R.color.bootstrap_brand_success));
             holder.completeTaskBtn.setClickable(false);
+        }
+        //Если задача новая отобразить это и обновить задачу
+        //Потом можно попытаться обновить только одно поле а не всю задачу
+        if(!task.isChecked){
+            task.setChecked(true);
+            holder.newTask.setVisibility(View.VISIBLE);
+            firestore.collection(SettingsViewModel.TASKS_COLLECTION)
+                    .document(task.getId())
+                    .set(task);
         }
     }
 
@@ -153,6 +166,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public TextView creatorName;
         public ExpandableTextView expandableTextView;
         public ImageButton completeTaskBtn;
+        public ImageView newTask;
         public OnTaskCompleteClickListener onTaskCompleteClickListener;
 
         public ViewHolder(@NonNull View itemView) {
@@ -162,6 +176,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             this.creatorName = itemView.findViewById(R.id.creator_name);
             this.expandableTextView = itemView.findViewById(R.id.expand_text_view);
             this.completeTaskBtn = itemView.findViewById(R.id.complete_task_btn);
+            this.newTask = itemView.findViewById(R.id.new_task);
         }
 
         public void setOnTaskCompleteClickListener(OnTaskCompleteClickListener onTaskCompleteClickListener) {

@@ -42,7 +42,7 @@ public class NotificationService extends LifecycleService {
     private FirebaseFirestore firestore;
     private SharedPreferences preferences;
     private Employee employee;
-    private List<Task> uncheckedTasks;
+    //public static List<Task> uncheckedTasks = new LinkedList<>();
     private MutableLiveData<List<Task>> tasksMutable;
     //Иниц. сервера, настроек и текущего пользователя для последующих синхронизаций и проверок задач
     @Override
@@ -52,7 +52,6 @@ public class NotificationService extends LifecycleService {
         preferences = getBaseContext().getSharedPreferences(SettingsViewModel.SETTINGS_STORAGE,MODE_PRIVATE);
         employee = new Gson().fromJson(
                 preferences.getString(SettingsViewModel.EMPLOYEE,null),Employee.class);
-        uncheckedTasks = new LinkedList<>();
         tasksMutable = new MutableLiveData<>();
     }
 
@@ -89,18 +88,19 @@ public class NotificationService extends LifecycleService {
         Observer<List<Task>> taskDownload = new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> taskList) {
-                if (taskList != null && taskList.size() > 0){
-                    MainActivity.tasksCount += taskList.size();
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_accept_gray);
-                        Notification.Builder notification = new Notification.Builder(getService(), CHANNEL_ID)
-                                .setContentText(String.format("У вас новые задачи: %d", MainActivity.tasksCount))
-                                .setContentTitle("Новые задачи")
-                                .setSmallIcon(R.drawable.icon_accept_green)
-                                .setLargeIcon(bitmap);
-                        startForeground(NOTIFY_ID, notification.build());
-                        updateCheckedTasks();
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_accept_gray);
+                    Notification.Builder notification = new Notification.Builder(getService(), CHANNEL_ID)
+                            .setContentTitle("Новые задачи")
+                            .setSmallIcon(R.drawable.icon_accept_green)
+                            .setLargeIcon(bitmap);
+                    if (taskList != null && taskList.size() > 0) {
+                        notification
+                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()));
+                        //updateCheckedTasks();
                     }
+                    else notification.setContentText("У вас нет новых задач");
+                    startForeground(NOTIFY_ID, notification.build());
                 }
             }
         };
@@ -125,7 +125,7 @@ public class NotificationService extends LifecycleService {
                     .document(task.getId())
                     .set(task);
         }
-        uncheckedTasks.clear();
+        //uncheckedTasks.clear();
     }
     public void downloadUncheckedTasks(){
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
@@ -144,7 +144,9 @@ public class NotificationService extends LifecycleService {
                                 tasks.add(task);
                             }
                             tasksMutable.postValue(tasks);
+                            return;
                         }
+                        tasksMutable.postValue(new LinkedList<>());
                     }
                 });
     }
