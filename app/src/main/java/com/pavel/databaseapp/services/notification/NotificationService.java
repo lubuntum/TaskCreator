@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -90,13 +92,15 @@ public class NotificationService extends LifecycleService {
             public void onChanged(List<Task> taskList) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_accept_gray);
+                    Uri notySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     Notification.Builder notification = new Notification.Builder(getService(), CHANNEL_ID)
                             .setContentTitle("Новые задачи")
                             .setSmallIcon(R.drawable.icon_accept_green)
                             .setLargeIcon(bitmap);
                     if (taskList != null && taskList.size() > 0) {
                         notification
-                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()));
+                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()))
+                                .setSound(notySound);
                         //updateCheckedTasks();
                     }
                     else notification.setContentText("У вас нет новых задач");
