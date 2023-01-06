@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/apply_notification"
+                android:id="@+id/allow_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Разрешить уведомления"
@@ -69,7 +69,7 @@
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Имя пользователя"
+            android:text="@string/user_name"
             android:textSize="18sp"
             android:textColor="@color/black"
             android:paddingTop="10dp"/>
@@ -77,13 +77,13 @@
             android:id="@+id/position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Должность"
+            android:text="@string/position"
             android:textSize="18sp"
             android:paddingTop="15dp"
             android:textColor="@color/black"
             />
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/task_count"
+            android:id="@+id/active_tasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/current_task_count"

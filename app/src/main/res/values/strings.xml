@@ -36,7 +36,9 @@
     <string name="accept">Войти</string>
     <string name="logout">Выйти</string>
     <string name="date_format">dd.MM.yyyy</string>
-    <string name="current_task_count">Количество невыполненных задач : %d</string>
+    <string name="current_position">Текущая должность: %s</string>
+    <string name="current_task_count">Количество активных задач: %d</string>
+    <string name="user_name">Имя пользователя: %s %s</string>
     <string-array name="positions">
         <item>Должность</item>
         <item>Преподаватель</item>
