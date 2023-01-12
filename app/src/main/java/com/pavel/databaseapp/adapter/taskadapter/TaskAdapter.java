@@ -130,12 +130,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         DateFormat parseFormat = new SimpleDateFormat(context.getResources().getString(R.string.date_format));
         for (Task task: taskList) {
             try {
-                Date testDate = parseFormat.parse(task.getEndDate());
-                Log.d(task.getEndDate(),String.valueOf(date.compareTo(testDate)));
+                //Date testDate = parseFormat.parse(task.getEndDate());
+                //Log.d(task.getEndDate(),String.valueOf(date.compareTo(testDate)));
                 if (parseFormat.parse(task.getEndDate()).compareTo(date) == 0)
                     filterList.add(task);
             } catch (ParseException e){
-                System.out.println(String.format("Incorrect date format %s",task.getEndDate()));
+                System.err.println(String.format("Incorrect date format %s",task.getEndDate()));
             }
         }
         notifyDataSetChanged();

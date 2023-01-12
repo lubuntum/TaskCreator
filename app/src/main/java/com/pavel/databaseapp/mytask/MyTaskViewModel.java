@@ -18,6 +18,7 @@ import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.settings.SettingsViewModel;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class MyTaskViewModel extends AndroidViewModel {
     private MutableLiveData<String> status;
     private SharedPreferences preferences;
     private Employee employee;
+    private Date pickedDate;
     public MyTaskViewModel(Application app){
         super(app);
         this.firestore = FirebaseFirestore.getInstance();
@@ -81,6 +83,14 @@ public class MyTaskViewModel extends AndroidViewModel {
                         status.postValue("Ошибка" + e.toString());
                     }
                 });
+    }
+
+    public Date getPickedDate() {
+        return pickedDate;
+    }
+
+    public void setPickedDate(Date pickedDate) {
+        this.pickedDate = pickedDate;
     }
 
     public SharedPreferences getPreferences() {
