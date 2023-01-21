@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
@@ -148,6 +149,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public Task getItemByPosition(int position){
         return filterList.get(position);
     }
+    public void addNewTasks(List<Task> uploadedTask){
+        for(Task upTask : uploadedTask){
+            boolean isUnique = true;
+            for(Task curTask : taskList){
+                if (upTask.getId().equals(curTask.getId())){
+                    isUnique = false;
+                    break;
+                }
+            }
+            if(isUnique) taskList.add(upTask);
+        }
+        notifyDataSetChanged();
+    }
     public Context getContext() {
         return context;
     }
@@ -158,6 +172,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public void setTaskCompleteListener(ViewHolder.OnTaskCompleteClickListener taskCompleteListener) {
         this.taskCompleteListener = taskCompleteListener;
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public List<Task> getFilterList() {
+        return filterList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
