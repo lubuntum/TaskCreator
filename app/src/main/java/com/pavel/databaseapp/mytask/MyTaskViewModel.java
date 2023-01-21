@@ -29,6 +29,8 @@ public class MyTaskViewModel extends AndroidViewModel {
     private SharedPreferences preferences;
     private Employee employee;
     private Date pickedDate;
+
+    private static volatile boolean taskListIsActive = false;
     public MyTaskViewModel(Application app){
         super(app);
         this.firestore = FirebaseFirestore.getInstance();
@@ -41,7 +43,7 @@ public class MyTaskViewModel extends AndroidViewModel {
         this.mutableTasks = new MutableLiveData<>();
         this.status = new MutableLiveData<>();
     }
-    public void getTaskByEmployeeLogin(String mail){
+    public void downloadTaskByEmployeeLogin(String mail){
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
                 .whereEqualTo(Task.EMPLOYEE_MAIL,mail)
                 .get()
@@ -84,6 +86,35 @@ public class MyTaskViewModel extends AndroidViewModel {
                     }
                 });
     }
+    public void synchronizeTaskList(){
+        Runnable updateRnb = new Runnable() {
+            @Override
+            public void run() {
+                while (taskListIsActive){
+                    try {
+                        Thread.sleep(15000);
+                        downloadTaskByEmployeeLogin(employee.mail);
+                        status.postValue("Update succeed");
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e){
+                        status.postValue("Ошибка синхронизации");
+                    }
+
+                }
+            }
+        };
+        Thread thread = new Thread(updateRnb);
+        thread.start();
+    }
+    public List<Task> getActiveTasks(){
+        if(mutableTasks.getValue() == null || mutableTasks.getValue().size() == 0){
+            return null;
+        }
+        List<Task> activeTasks = new LinkedList<>();
+        for (Task task: mutableTasks.getValue())
+            if(!task.isComplete)  activeTasks.add(task);
+        return activeTasks;
+    }
 
     public Date getPickedDate() {
         return pickedDate;
@@ -115,5 +146,12 @@ public class MyTaskViewModel extends AndroidViewModel {
 
     public FirebaseFirestore getFirestore() {
         return firestore;
+    }
+
+    public static void setTaskListIsActive(boolean taskListIsActive) {
+        MyTaskViewModel.taskListIsActive = taskListIsActive;
+    }
+    public static boolean isTaskListIsActive() {
+        return taskListIsActive;
     }
 }

@@ -1,11 +1,6 @@
 package com.pavel.databaseapp.mytask;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +18,6 @@ import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.adapter.taskadapter.TaskAdapter;
 import com.pavel.databaseapp.data.Task;
 import com.pavel.databaseapp.databinding.FragmentMyTasksBinding;
-import com.pavel.databaseapp.services.notification.UpdateTasksService;
-import com.pavel.databaseapp.services.notification.UpdateTasksService.LocalBinder;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,29 +30,6 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
     FragmentMyTasksBinding binding;
     TaskAdapter taskAdapter;
 
-    private UpdateTasksService tasksService;
-    private boolean taskServiceBind = false;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocalBinder localBinder = (LocalBinder) service;
-            tasksService = localBinder.getService();
-            if(tasksService != null){
-                //Установка значений для сервиса
-                tasksService.setUpdatedTasks(myTaskViewModel.getMutableTasks());
-                tasksService.setEmployee(myTaskViewModel.getEmployee());
-                tasksService.setStatus(myTaskViewModel.getStatus());
-
-                tasksService.startMonitoring();
-                taskServiceBind = true;
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            taskServiceBind = false;
-        }
-    };
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         myTaskViewModel =  new ViewModelProvider(getActivity()).get(MyTaskViewModel.class);
@@ -77,11 +47,14 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
+        myTaskViewModel.downloadTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
         statusInit();
         downloadTasks();
         freshTasksListInit();
         taskCalendarInit();
+
+        MyTaskViewModel.setTaskListIsActive(true);
+        myTaskViewModel.synchronizeTaskList();
     }
     public void statusInit(){
         Observer<String> statusObserver = new Observer<String>() {
@@ -94,20 +67,24 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
 
     }
     public void downloadTasks(){
-        myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
+        myTaskViewModel.downloadTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
         binding.uploadBar.setVisibility(View.VISIBLE);
         Observer<List<Task>> tasksObserver = new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
                 String activeTaskStr = String.format(getString(R.string.active_tasks_count), tasks.size());
                 binding.activeTask.setText(activeTaskStr);
-
-                taskAdapter = new TaskAdapter(getContext(),tasks, R.layout.task_item_2);
-                taskAdapter.setTaskCompleteListener(getCurrentFragment());
-
+                if(taskAdapter == null) {
+                    taskAdapter = new TaskAdapter(getContext(), tasks, R.layout.task_item_2);
+                    taskAdapter.setTaskCompleteListener(getCurrentFragment());
+                }
                 binding.tasksList.setAdapter(taskAdapter);
+                taskAdapter.addNewTasks(tasks);//Добавить новые даты при синзронизации и тд
+                //отсортировать задачи по дате после синхронизации если нужно
                 if(myTaskViewModel.getPickedDate() != null)
                     taskAdapter.filterByDate(myTaskViewModel.getPickedDate());
+                if(taskAdapter.getTaskList() == null || taskAdapter.getTaskList().size() == 0)
+                    checkTaskListEmpty();
 
                 binding.uploadBar.setVisibility(View.GONE);
                 binding.swipeRefreshContainer.setRefreshing(false);
@@ -120,7 +97,7 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
             @Override
             public void onRefresh() {
                 binding.swipeRefreshContainer.setRefreshing(true);
-                myTaskViewModel.getTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
+                myTaskViewModel.downloadTaskByEmployeeLogin(myTaskViewModel.getEmployee().mail);
             }
         });
     }
@@ -141,6 +118,7 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
                     Date parseDate = parseFormat.parse(parseFormat.format(date));
                     taskAdapter.filterByDate(parseDate);
                     myTaskViewModel.setPickedDate(parseDate);
+                    checkTaskListEmpty();//После фильтрации проверка задач
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -149,20 +127,28 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
             }
         });
     }
+    //Переделать с помощью Observer как Status + Toast
+    public void checkTaskListEmpty(){
+        if(taskAdapter.getFilterList().size() == 0) {
+            binding.notFoundTaskMsg.setVisibility(View.VISIBLE);
+            binding.notFoundTaskMsg.setText(String.format(
+                    getResources()
+                            .getString(R.string.empty_filter_task_list), myTaskViewModel.getPickedDate()
+                            .toString()));
+        }
+        else if(taskAdapter.getTaskList().size() == 0){
+            binding.notFoundTaskMsg.setVisibility(View.VISIBLE);
+            binding.notFoundTaskMsg.setText(
+                    getResources().getString(R.string.empty_total_task_list));
+        }
+        else binding.notFoundTaskMsg.setVisibility(View.GONE);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Intent intent = new Intent(getContext(),UpdateTasksService.class);
-        boolean autoUpdate = getContext().bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
-            //tasksService.startMonitoring();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getContext().unbindService(serviceConnection);
-        if (taskServiceBind) taskServiceBind = false;
+        MyTaskViewModel.setTaskListIsActive(false);
     }
 
     @Override
