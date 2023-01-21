@@ -4,12 +4,17 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -92,19 +97,22 @@ public class NotificationService extends LifecycleService {
             public void onChanged(List<Task> taskList) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_accept_gray);
-                    Uri notySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     Notification.Builder notification = new Notification.Builder(getService(), CHANNEL_ID)
                             .setContentTitle("Новые задачи")
                             .setSmallIcon(R.drawable.icon_accept_green)
                             .setLargeIcon(bitmap);
                     if (taskList != null && taskList.size() > 0) {
                         notification
-                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()))
-                                .setSound(notySound);
+                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()));
                         //updateCheckedTasks();
                     }
                     else notification.setContentText("У вас нет новых задач");
-                    startForeground(NOTIFY_ID, notification.build());
+                    //Вызвать функцию initNotificationManager(notification);
+                    //initNotificationManager(notification);
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(NOTIFY_ID,notification.build());
+                    //startForeground(NOTIFY_ID, notification.build());
                 }
             }
         };
@@ -153,6 +161,32 @@ public class NotificationService extends LifecycleService {
                         tasksMutable.postValue(new LinkedList<>());
                     }
                 });
+    }
+    //Для загрузки аудио канала + отображения сообщения если есть новые задачи
+    public void initNotificationManager(Notification.Builder notification){
+        Uri notySound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                getPackageName() + "/raw/notification_sound.mp3");
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel;
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+            channel = new NotificationChannel("SOUND_SERVICE_ID","ring",NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setLightColor(Color.GRAY);
+            channel.enableLights(true);
+            AudioAttributes audioAttributes =
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                            .build();
+            channel.setSound(notySound,audioAttributes);
+            notificationManager.createNotificationChannel(channel);
+
+            notification.setSound(notySound,audioAttributes);
+            notification.setVibrate(new long[]{0,500,1000});
+            notificationManager.notify(NOTIFY_ID,notification.build());
+        }
+        //notificationManager.notify(NOTIFY_ID,notification.build());
+
     }
     public NotificationService getService(){
         return this;
