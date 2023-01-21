@@ -20,6 +20,8 @@ public class SettingsViewModel extends AndroidViewModel {
     public static final String LOGIN_KEY = "login";//deprecate
     public static final String PASSWORD_KEY = "password";//deprecate
     public static final String CURRENT_THEME = "theme";
+    public static final String DARK_THEME = "dark";
+    public static final String WHITE_THEME = "white";
     public static final String EMPLOYEE = "employee";
 
     private SharedPreferences preferences;
