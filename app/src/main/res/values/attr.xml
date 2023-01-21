@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="theme_colors">
+        <attr name="background_color" format="color"/>
+        <attr name="text_color" format="color"/>
+        <attr name="ui_primary" format="color"/>
+        <attr name="ui_secondary" format="color"/>
+        <attr name="ui_variant" format="color" />
+    </declare-styleable>
+</resources>

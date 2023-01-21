@@ -39,6 +39,11 @@
     <string name="current_position">Текущая должность: %s</string>
     <string name="current_task_count">Количество активных задач: %d</string>
     <string name="user_name">Имя пользователя: %s %s</string>
+    <string name="name_info">Фамилия и Имя</string>
+    <string name="allow_notification">Разрешить уведомления</string>
+    <string name="task_sync">Синхронизация задач</string>
+    <string name="empty_filter_task_list">Похоже на дату %s у вас нет задач</string>
+    <string name="empty_total_task_list">Пока у вас нет новых задач</string>
     <string-array name="positions">
         <item>Должность</item>
         <item>Преподаватель</item>
