@@ -1,6 +1,7 @@
 package com.pavel.databaseapp.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -15,6 +16,9 @@ public class AuthActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.Theme_DatabaseAppDark);
+        else setTheme(R.style.Theme_DatabaseApp);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);

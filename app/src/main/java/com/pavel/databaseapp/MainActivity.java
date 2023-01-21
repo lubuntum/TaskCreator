@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.Theme_DatabaseAppDark);
+        else setTheme(R.style.Theme_DatabaseApp);
         super.onCreate(savedInstanceState);
         if(!isNotificationServiceRunning()) {
             tasksCount = 0;
