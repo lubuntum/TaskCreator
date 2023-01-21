@@ -19,6 +19,7 @@
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/task_calendar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -26,14 +27,14 @@
         android:id="@+id/swipe_refresh_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/active_task">
+        app:layout_constraintTop_toBottomOf="@id/task_calendar">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tasks_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="35dp"
+            android:paddingBottom="80dp"
             android:paddingStart="15dp"
-            android:paddingEnd="15dp"
+            android:paddingEnd="25dp"
 
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
@@ -49,6 +50,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:visibility="visible"/>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/not_found_task_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_filter_task_list"
+        android:textSize="21dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:textColor="?attr/ui_primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 
