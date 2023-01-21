@@ -26,6 +26,10 @@ import com.pavel.databaseapp.R;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.databinding.FragmentRegistraionBinding;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class RegistrationFragment extends Fragment {
     FragmentRegistraionBinding binding;
     AuthViewModel authViewModel;
@@ -95,6 +99,7 @@ public class RegistrationFragment extends Fragment {
         String [] personalData = binding.userName.getText().toString().split(" ");
         String phone = binding.phone.getText().toString();
         String position = binding.positionPicker.getSelectedItem().toString();
+        String birthdayDate = binding.dateOfBirth.getText().toString();
         if(email.length() < 6 || !email.matches("([A-Za-z\\d._-]+)@[A-Za-z._-]+\\.[a-zA-Z]{2,5}")) {
             binding.email.setError("Почта некорректна");
             return false;
@@ -108,10 +113,11 @@ public class RegistrationFragment extends Fragment {
             Toast.makeText(getContext(), "Выберите должность", Toast.LENGTH_SHORT).show();
             return false;
         }
+        /*Проверить дату*/
         Employee employee = new Employee(
                 personalData[0]
                 ,personalData[1],
-                "01.01.1999", position, email, phone);
+                birthdayDate, position, email, phone);
         employee.setPassword(password);
         authViewModel.setEmployee(employee);
         return true;
