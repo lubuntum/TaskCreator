@@ -67,6 +67,7 @@ public class AuthViewModel extends AndroidViewModel {
     }
     public void sendEmployeeData(){
         if(auth.getCurrentUser() != null)
+            employee.setPassword(null);
             firestore.collection("employees").add(employee)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
