@@ -1,9 +1,15 @@
 package com.pavel.databaseapp.dialog.employee;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,12 +23,18 @@ import com.pavel.databaseapp.adapter.employadapter.EmployeeAdapter;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.databinding.EmployeeSearchBinding;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdapter.ViewHolder.OnEmployeeClickListener {
     EmployeeAdapter employeeAdapter;
     EmployeeSearchBinding binding;
     EmployeeViewModel viewModel;
+
+    TextWatcher textWatcher;//Для мониторинга ввода текста
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +54,10 @@ public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdap
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         uploadEmployeesObserverInit();
         uploadErrorObserverInit();
+
         employeeListInit();
+        employeeNameInit();//Отслеживание ввода, фильтрация
+        observeDialogLayoutChanges();
     }
     public void employeeListInit(){
         //employeeAdapter = new EmployeeAdapter(getContext(), viewModel.getEmployees());
@@ -100,7 +115,52 @@ public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdap
         viewModel.getPickedEmployee().setValue(viewModel.getEmployees().get(position));
         dismiss();
     }
+    public void observeDialogLayoutChanges(){
+        //Адаптация элементов диалогового окна под текущий размер
+        binding.employeeSearchContainer.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        ViewGroup.LayoutParams params = binding.employeeNameContainer.getLayoutParams();
+                        try {
+                            params.width = (int) (requireActivity().getWindow().getDecorView().getWidth() * 0.7);
+                        } catch (Exception e) {
+                            params.width = 500;
+                        }
+                    }
+                });
+    }
+    public void employeeNameInit(){
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(employeeAdapter == null) return;
+                if(s == null || s.toString().matches(" *") ){
+                    employeeAdapter.showAll();
+                    return;
+                }
+                employeeAdapter.filter(s.toString());
+            }
+        };
+        binding.employeeName.addTextChangedListener(textWatcher);
+    }
     public EmployeeSearchDialog getFragmentContext(){
         return this;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }
