@@ -43,7 +43,7 @@
                 android:value="" />
         </activity>
         <service android:name=".services.notification.NotificationService"/>
-        <service android:name=".services.notification.UpdateTasksService"/>
+        <service android:name=".services.UpdateTasksService"/>
     </application>
 
 </manifest>

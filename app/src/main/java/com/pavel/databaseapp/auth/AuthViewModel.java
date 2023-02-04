@@ -66,7 +66,7 @@ public class AuthViewModel extends AndroidViewModel {
         });
     }
     public void sendEmployeeData(){
-        if(auth.getCurrentUser() != null)
+        if(auth.getCurrentUser() != null) {
             employee.setPassword(null);
             firestore.collection("employees").add(employee)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -81,6 +81,7 @@ public class AuthViewModel extends AndroidViewModel {
                             status.postValue("Ошибка " + e);
                         }
                     });
+        }
     }
     public void uploadEmployeeByLogin(String login){
         firestore.collection(SettingsViewModel.EMPLOYEE_COLLECTION)
@@ -89,8 +90,10 @@ public class AuthViewModel extends AndroidViewModel {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        for (QueryDocumentSnapshot doc : task.getResult())
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
                             employee = Employee.parse(doc);
+                            employee.setId(doc.getId());
+                        }
                         hashCurrentEmployee();
                         //Сохранить employee в preferences, лучше новый метод
                         //task.getResult().iterator().next();

@@ -10,6 +10,8 @@ import androidx.lifecycle.AndroidViewModel;
 import com.google.gson.Gson;
 import com.pavel.databaseapp.data.Employee;
 
+import java.io.File;
+
 public class SettingsViewModel extends AndroidViewModel {
     //Network
     public static final String EMPLOYEE_COLLECTION = "employees";
@@ -23,6 +25,7 @@ public class SettingsViewModel extends AndroidViewModel {
     public static final String DARK_THEME = "dark";
     public static final String WHITE_THEME = "white";
     public static final String EMPLOYEE = "employee";
+    public static final String PROFILE_ICON = "profile_icon.jpg";
 
     private SharedPreferences preferences;
     private Employee employee;

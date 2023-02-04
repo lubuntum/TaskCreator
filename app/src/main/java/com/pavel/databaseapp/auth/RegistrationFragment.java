@@ -117,7 +117,7 @@ public class RegistrationFragment extends Fragment {
         Employee employee = new Employee(
                 personalData[0]
                 ,personalData[1],
-                birthdayDate, position, email, phone);
+                birthdayDate, position, email, phone, null);
         employee.setPassword(password);
         authViewModel.setEmployee(employee);
         return true;
