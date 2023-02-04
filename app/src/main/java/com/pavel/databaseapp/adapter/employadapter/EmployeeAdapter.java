@@ -59,6 +59,9 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         filterEmployees = employees;
         notifyDataSetChanged();
     }
+    public List<Employee> getFilterEmployees(){
+        return filterEmployees;
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView primaryInfo;
         final TextView phone;

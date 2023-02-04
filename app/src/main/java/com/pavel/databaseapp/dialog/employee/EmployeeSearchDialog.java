@@ -112,7 +112,8 @@ public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdap
     @Override
     public void onClick(int position) {
         //Toast.makeText(getContext(), viewModel.getEmployees().get(position).name, Toast.LENGTH_SHORT).show();
-        viewModel.getPickedEmployee().setValue(viewModel.getEmployees().get(position));
+        viewModel.getPickedEmployee()
+                .setValue(employeeAdapter.getFilterEmployees().get(position));
         dismiss();
     }
     public void observeDialogLayoutChanges(){
@@ -138,10 +139,7 @@ public class EmployeeSearchDialog extends DialogFragment implements EmployeeAdap
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {

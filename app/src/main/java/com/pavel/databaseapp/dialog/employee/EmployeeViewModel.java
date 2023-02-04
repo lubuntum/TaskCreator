@@ -47,7 +47,7 @@ public class EmployeeViewModel extends ViewModel {
         List<Employee> tempList = new LinkedList<>();
         firestore.collection("employees")
                 .get()
-                .addOnCompleteListener(task ->{
+                .addOnCompleteListener(task -> {
                    if (!task.isSuccessful()) {
                        uploadState.postValue(false);
                        return;
