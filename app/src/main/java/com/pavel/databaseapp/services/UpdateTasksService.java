@@ -1,35 +1,30 @@
-package com.pavel.databaseapp.services.notification;
+package com.pavel.databaseapp.services;
 
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleService;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pavel.databaseapp.data.Employee;
 import com.pavel.databaseapp.data.Task;
-import com.pavel.databaseapp.mytask.MyTaskViewModel;
 import com.pavel.databaseapp.settings.SettingsViewModel;
 
 import java.util.LinkedList;
 import java.util.List;
-
+//NO USE
 public class UpdateTasksService extends LifecycleService {
     private final IBinder binder = new LocalBinder();
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private MutableLiveData<List<Task>> updatedTasks;
-    private MutableLiveData<String> status;
     private Employee employee;
 
     @Nullable
@@ -53,7 +48,7 @@ public class UpdateTasksService extends LifecycleService {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                while (true) {
+                while (UpdateTasksService.this.binder.isBinderAlive()) {
                     try {
                         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
                                 .whereEqualTo(Task.EMPLOYEE_MAIL,employee.mail)
@@ -75,7 +70,7 @@ public class UpdateTasksService extends LifecycleService {
                                     }
                                 });
 
-                        Thread.sleep(15000);
+                        Thread.sleep(35000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -84,17 +79,15 @@ public class UpdateTasksService extends LifecycleService {
         };
         Thread thread = new Thread(startMonitoringRnb);
         thread.start();
+
+        //thread.interrupt();
+        //stopSelf();
     }
 
     public void setUpdatedTasks(MutableLiveData<List<Task>> updatedTasks) {
         this.updatedTasks = updatedTasks;
     }
-
     public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public void setStatus(MutableLiveData<String> status) {
-        this.status = status;
     }
 }
