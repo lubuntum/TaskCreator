@@ -27,4 +27,9 @@
         android:name="com.pavel.databaseapp.auth.LogoutFragment"
         android:label="@string/logout"
         tools:layout="@layout/fragment_logout"/>
+    <fragment
+        android:id="@+id/nav_employee_tasks"
+        android:name="com.pavel.databaseapp.employestasks.EmployeeFragment"
+        android:label="@string/employees_tasks"
+        tools:layout="@layout/fragment_employees"/>
 </navigation>

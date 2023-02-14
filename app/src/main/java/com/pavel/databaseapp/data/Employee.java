@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.pavel.databaseapp.services.BitmapStoreService;
 
+import java.io.Serializable;
+
 import javax.annotation.Nullable;
 
-public class Employee {
+public class Employee implements Serializable {
     public static final String NAME = "name";
     private static final String SECOND_NAME = "secondName";
     public static final String DATE_OF_BIRTHDAY = "birthday";

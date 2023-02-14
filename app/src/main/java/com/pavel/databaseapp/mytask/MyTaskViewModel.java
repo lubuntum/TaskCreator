@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,6 +27,7 @@ public class MyTaskViewModel extends AndroidViewModel {
     FirebaseFirestore firestore;
     private MutableLiveData<List<Task>> mutableTasks;
     private MutableLiveData<String> status;
+    private MutableLiveData<String> msgWall;
     private SharedPreferences preferences;
     private Employee employee;
     private Date pickedDate;
@@ -42,6 +44,7 @@ public class MyTaskViewModel extends AndroidViewModel {
     public void mutableInit(){
         this.mutableTasks = new MutableLiveData<>();
         this.status = new MutableLiveData<>();
+        this.msgWall = new MutableLiveData<>();
     }
     public void downloadTaskByEmployeeLogin(String mail){
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
@@ -68,6 +71,13 @@ public class MyTaskViewModel extends AndroidViewModel {
                         status.postValue("Пожалуйста проверьте интернет соединение");
                         //Log.d("TASK FAIL","Please check network connection");
                     }
+                }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+                        if(task.getResult().getDocuments() == null ||
+                                task.getResult().getDocuments().size() == 0)
+                            msgWall.setValue("Пока у вас нет новых задач");
+                    }
                 });
     }
     public void completeTaskUpload(Task task){
@@ -92,7 +102,7 @@ public class MyTaskViewModel extends AndroidViewModel {
             public void run() {
                 while (taskListIsActive){
                     try {
-                        Thread.sleep(15000);
+                        Thread.sleep(25000);
                         downloadTaskByEmployeeLogin(employee.mail);
                         status.postValue("Update succeed");
                         Thread.sleep(15000);
@@ -136,6 +146,10 @@ public class MyTaskViewModel extends AndroidViewModel {
         return employee;
     }
 
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
     public MutableLiveData<List<Task>> getMutableTasks() {
         return mutableTasks;
     }
@@ -153,5 +167,13 @@ public class MyTaskViewModel extends AndroidViewModel {
     }
     public static boolean isTaskListIsActive() {
         return taskListIsActive;
+    }
+
+    public MutableLiveData<String> getMsgWall() {
+        return msgWall;
+    }
+
+    public void setMsgWall(MutableLiveData<String> msgWall) {
+        this.msgWall = msgWall;
     }
 }

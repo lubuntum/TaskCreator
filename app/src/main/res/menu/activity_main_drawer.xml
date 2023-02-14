@@ -13,6 +13,10 @@
             android:icon="@drawable/icon_add_task"
             android:title="@string/create_task_menu" />
         <item
+            android:id="@+id/nav_employee_tasks"
+            android:icon="@drawable/icon_statistics"
+            android:title="@string/employees_tasks"/>
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/icon_settings"
             android:title="@string/settings" />

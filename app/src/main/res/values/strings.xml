@@ -44,6 +44,7 @@
     <string name="task_sync">Синхронизация задач</string>
     <string name="empty_filter_task_list">Похоже на дату %s у вас нет задач</string>
     <string name="empty_total_task_list">Пока у вас нет новых задач</string>
+    <string name="employees_tasks">Задачи сотрудников</string>
     <string-array name="positions">
         <item>Должность</item>
         <item>Преподаватель</item>
