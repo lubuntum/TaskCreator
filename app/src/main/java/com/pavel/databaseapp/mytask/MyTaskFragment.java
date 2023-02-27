@@ -39,7 +39,9 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myTaskViewModel =  new ViewModelProvider(getActivity()).get(MyTaskViewModel.class);
-        myTaskViewModel.mutableInit();
+        myTaskViewModel.init();
+        taskAdapter = null;
+
         binding = FragmentMyTasksBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
@@ -74,21 +76,19 @@ public class MyTaskFragment extends Fragment implements TaskAdapter.ViewHolder.O
         Observer<List<Task>> tasksObserver = new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                if(tasks == null || tasks.size() == 0)
+                if(tasks == null || tasks.size() <= 0) {
                     myTaskViewModel.getMsgWall().setValue(getResources().getString(R.string.empty_total_task_list));
-                //String activeTaskStr = String.format(getString(R.string.active_tasks_count), tasks.size());
-                //binding.activeTask.setText(activeTaskStr);
+                    return;
+                }
                 if(taskAdapter == null) {
                     taskAdapter = new TaskAdapter(getContext(), tasks, R.layout.task_item_2);
                     taskAdapter.setTaskCompleteListener(getCurrentFragment());
+                    binding.tasksList.setAdapter(taskAdapter);
                 }
-                binding.tasksList.setAdapter(taskAdapter);
                 taskAdapter.addNewTasks(tasks);//Добавить новые даты при синзронизации и тд
                 //отсортировать задачи по дате после синхронизации если нужно
                 if(myTaskViewModel.getPickedDate() != null)
                     taskAdapter.filterByDate(myTaskViewModel.getPickedDate());
-                //if(taskAdapter.getTaskList() == null || taskAdapter.getTaskList().size() == 0)
-                //    checkTaskListEmpty();
 
                 binding.uploadBar.setVisibility(View.GONE);
                 binding.swipeRefreshContainer.setRefreshing(false);

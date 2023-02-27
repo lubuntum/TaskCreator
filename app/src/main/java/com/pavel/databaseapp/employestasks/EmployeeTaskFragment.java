@@ -4,18 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.pavel.databaseapp.createtask.CreateTaskViewModel;
 import com.pavel.databaseapp.data.Employee;
-import com.pavel.databaseapp.databinding.FragmentCreateTaskBinding;
 import com.pavel.databaseapp.databinding.FragmentMyTasksBinding;
-import com.pavel.databaseapp.dialog.employee.EmployeeViewModel;
 import com.pavel.databaseapp.mytask.MyTaskFragment;
 import com.pavel.databaseapp.mytask.MyTaskViewModel;
 
@@ -39,7 +34,7 @@ public class EmployeeTaskFragment extends MyTaskFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //employeeViewModel = new ViewModelProvider(getActivity()).get(EmployeeViewModel.class);
         myTaskViewModel = new ViewModelProvider(this).get(MyTaskViewModel.class);
-        myTaskViewModel.mutableInit();
+        myTaskViewModel.init();
         if(getArguments() != null)
             myTaskViewModel.setEmployee((Employee) getArguments().getSerializable("Employee"));
         binding = FragmentMyTasksBinding.inflate(inflater,container,false);

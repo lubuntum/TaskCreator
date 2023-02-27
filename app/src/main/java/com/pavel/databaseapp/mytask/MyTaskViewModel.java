@@ -41,10 +41,12 @@ public class MyTaskViewModel extends AndroidViewModel {
         Gson gson = new Gson();
         this.employee = gson.fromJson(preferences.getString(SettingsViewModel.EMPLOYEE,null),Employee.class);
     }
-    public void mutableInit(){
+    public void init(){
         this.mutableTasks = new MutableLiveData<>();
         this.status = new MutableLiveData<>();
         this.msgWall = new MutableLiveData<>();
+
+        this.pickedDate = null;
     }
     public void downloadTaskByEmployeeLogin(String mail){
         firestore.collection(SettingsViewModel.TASKS_COLLECTION)
@@ -102,10 +104,10 @@ public class MyTaskViewModel extends AndroidViewModel {
             public void run() {
                 while (taskListIsActive){
                     try {
-                        Thread.sleep(25000);
+                        Thread.sleep(5000);
                         downloadTaskByEmployeeLogin(employee.mail);
                         status.postValue("Update succeed");
-                        Thread.sleep(15000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e){
                         status.postValue("Ошибка синхронизации");
                     }
