@@ -3,6 +3,7 @@ package com.pavel.databaseapp.services.notification;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -45,12 +46,16 @@ public class NotificationService extends LifecycleService {
     public static final String CHANNEL_ID = "Notification service ID";
     public static final int NOTIFY_ID = 1001;
 
+    public static final int REQUEST_CODE = 4041;
+
     public boolean isActive = true;
     private FirebaseFirestore firestore;
     private SharedPreferences preferences;
     private Employee employee;
     //public static List<Task> uncheckedTasks = new LinkedList<>();
     private MutableLiveData<List<Task>> tasksMutable;
+    private List<Task> prevTasks = new LinkedList<>();
+    private boolean noTasks = false;
     //Иниц. сервера, настроек и текущего пользователя для последующих синхронизаций и проверок задач
     @Override
     public void onCreate() {
@@ -80,39 +85,63 @@ public class NotificationService extends LifecycleService {
                 }
             }
         };
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_LOW);
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_accept_gray);
+
+            Intent openTasks = new Intent(this, MainActivity.class);
+            openTasks.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent
+                    .getActivity(this,REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
             Notification.Builder notification = new Notification.Builder(this, CHANNEL_ID)
                     .setContentText("Нет новых задач")
                     .setContentTitle("Новые задачи")
                     .setSmallIcon(R.drawable.icon_accept_green)
-                    .setLargeIcon(bitmap);
+                    .setLargeIcon(bitmap)
+                    .setContentIntent(pendingIntent);
             startForeground(NOTIFY_ID, notification.build());
         }
+        /*Если сервер вернул все новые задачи, но они все уже были, мы ничего не сделаем
+        А вот если он вернул 0 новых задач, значит они все были проверены и можно
+        оповестить пользователя о том, что новыз задач более нет, только в этом случае
+        А вот если сервер прислал еще какую то новую задачу, мы должны оповестить что пришла новая задача
+        noTasks отвечает за то, что оповещение что задач нет уже было показано, что бы не дублировать
+        taskList пришедшие задачи с сервера
+        * */
         Observer<List<Task>> taskDownload = new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> taskList) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_accept_gray);
+                    Intent openTasks = new Intent(getService(), MainActivity.class);
+                    openTasks.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    PendingIntent pendingIntent = PendingIntent
+                            .getActivity(getService(), REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Notification.Builder notification = new Notification.Builder(getService(), CHANNEL_ID)
                             .setContentTitle("Новые задачи")
                             .setSmallIcon(R.drawable.icon_accept_green)
-                            .setLargeIcon(bitmap);
-                    if (taskList != null && taskList.size() > 0) {
-                        notification
-                                .setContentText(String.format("У вас новые задачи: %d", taskList.size()));
-                        //updateCheckedTasks();
+                            .setLargeIcon(bitmap)
+                            .setContentIntent(pendingIntent);
+
+                    if(findNewTasks(taskList)) {
+                        notification.setContentText(String.format("У вас новые задачи: %d", taskList.size()));
+                        //Запоминаем для дальнейшего сравнения
+                        prevTasks = taskList;
+                        noTasks = false;
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(NOTIFY_ID, notification.build());
+                    } else if (taskList != null && taskList.size() == 0 && !noTasks){//Если новых задач нет, и мы это еще не показывали то...
+                        notification.setContentText("У вас нет новых задач");
+                        noTasks = true;
+                        //что бы при повторном вызове уведомление не сработало, если не появились новые задачи
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(NOTIFY_ID, notification.build());
                     }
-                    else notification.setContentText("У вас нет новых задач");
-                    //Вызвать функцию initNotificationManager(notification);
-                    //initNotificationManager(notification);
-                    NotificationManager notificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(NOTIFY_ID,notification.build());
-                    //startForeground(NOTIFY_ID, notification.build());
                 }
             }
         };
@@ -162,6 +191,24 @@ public class NotificationService extends LifecycleService {
                     }
                 });
     }
+
+    private boolean findNewTasks(List<Task> tasks){
+        //если пришедших задач нету, то и разговора нет, если прошлых нет, но новые есть то сразу да
+        if(tasks == null || tasks.size() == 0) return false;
+        if(prevTasks == null || prevTasks.size() == 0) return true;
+        for (Task task : tasks) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                //если нет id, то это новая задача
+                if(!prevTasks.stream().anyMatch(t->t.getId().equals(task.getId())))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    /*
     //Для загрузки аудио канала + отображения сообщения если есть новые задачи
     public void initNotificationManager(Notification.Builder notification){
         Uri notySound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
@@ -186,8 +233,8 @@ public class NotificationService extends LifecycleService {
             notificationManager.notify(NOTIFY_ID,notification.build());
         }
         //notificationManager.notify(NOTIFY_ID,notification.build());
-
     }
+     */
     public NotificationService getService(){
         return this;
     }
